@@ -8,4 +8,4 @@ This project is created as .NET Portable Class Library for
 - Windows Universal 10.0
 
 # Compliance to Mustache specifications
-This implementation is compliant to last Mustache specification (version 1.1.3) at [https://github.com/mustache/spec](https://github.com/mustache/spec) except for the optinal module *lambdas*.
+This implementation is compliant to version 1.1.3 of Mustache specifications (currently this is the last version) available at [https://github.com/mustache/spec](https://github.com/mustache/spec) except for the optional module *lambdas*.
