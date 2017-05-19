@@ -13,11 +13,13 @@ This implementation is compliant to version 1.1.3 (currently this is the last ve
 # How to use it
 Here is a code sample to explain how to use this library
     
-    const string templateString = @"Hello {Name}
+    {% raw %}
+    const string templateString = @"Hello {{Name}}
     You have just won {{Value}} {{Currency}}!
     {{#InCa}}
     Well, {{TaxedValue}} {{Currency}}, after taxes.
     {{/InCa}}";
+    {% endraw %}
     
     var data = new
     {
