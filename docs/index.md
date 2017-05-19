@@ -18,8 +18,7 @@ Here is a code sample to explain how to use this library
     You have just won {{Value}} {{Currency}}!
     {{#InCa}}
     Well, {{TaxedValue}} {{Currency}}, after taxes.
-    {{/InCa}}";
-    {% endraw %}
+    {{/InCa}}";{% endraw %}
     
     var data = new
     {
