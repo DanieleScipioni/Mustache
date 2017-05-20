@@ -29,9 +29,9 @@ Here is a code sample to explain how to use this library
         InCa = true
     };
 
-    string templated = Template.Compile(templateString).Render(data);
+    string result = Template.Compile(templateString).Render(data);
 
-The value of templated is
+The value of result is
     
     Hello Chris
     You have just won 10000 dollars!
