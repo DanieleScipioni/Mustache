@@ -52,3 +52,26 @@ It is possible to use Dictionaries too:
         {"Currency", "dollars"},
         {"InCa", true}
     };
+    
+If you need partials use method Template.Render(object, Dictionary<string, string>), example:
+
+    var data = new
+    {
+        Name = "Chris",
+        Value = 10000,
+        TaxedValue = 6000,
+        Currency = "dollars",
+        InCa = true
+    };
+
+    var partials = new Dictionary<string, string> { { "partial", "Well, {{TaxedValue}} {{Currency}}, after taxes.\r\n" } };
+
+    {% raw %}
+    const string templateString = @"Hello {{Name}}
+    You have just won {{Value}} {{Currency}}!
+    {{#InCa}}
+    {{>partial}}
+    {{/InCa}}
+    ";{% endraw %}
+
+     string result = Template.Compile(templateString).Render(data, partials);
