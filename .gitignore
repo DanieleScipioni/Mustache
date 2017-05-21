@@ -1,0 +1,12 @@
+﻿/.vs
+/.svn
+/.nuget
+/packages
+/*/bin
+/*/obj
+/*.user
+/*/*.user
+/*/project.lock.json
+/*/*.targets
+/*.dgml
+/*/AppPackages
