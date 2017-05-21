@@ -1,23 +1,29 @@
 # Mustache.PCL - Logic-less templates for .NET 
 
-Mustache documentation and specifications at [http://mustache.github.com](http://mustache.github.com).
+This library is an implementation of Mustache logic-less templates specifications.
 
-This project is created as .NET Portable Class Library for 
+The project is created as .NET Portable Class Library for 
 - .NET Framework 4.6
 - ASP.NET Core 1.0
 - Windows Universal 10.0
 
+Mustache documentation and specifications can be found at [http://mustache.github.com](http://mustache.github.com).
+
 # Compliance to Mustache specifications
 This implementation is compliant to version 1.1.3 (currently this is the last version) of Mustache specifications except for the optional module *lambdas*. Specifications are available at [https://github.com/mustache/spec](https://github.com/mustache/spec).
 
-# How to use it
+# NuGet
+This library is availabe using NuGet, [https://www.nuget.org/packages/Mustache.PCL](https://www.nuget.org/packages/Mustache.PCL).
+
+# How to use the library
 Here is a code sample to explain how to use this library
     
+    {% raw %}
     const string templateString = @"Hello {{Name}}
     You have just won {{Value}} {{Currency}}!
     {{#InCa}}
     Well, {{TaxedValue}} {{Currency}}, after taxes.
-    {{/InCa}}";
+    {{/InCa}}";{% endraw %}
     
     var data = new
     {
@@ -28,9 +34,9 @@ Here is a code sample to explain how to use this library
         InCa = true
     };
 
-    string templated = Template.Compile(templateString).Render(data);
+    string result = Template.Compile(templateString).Render(data);
 
-The value of templated is
+The value of result is
     
     Hello Chris
     You have just won 10000 dollars!
