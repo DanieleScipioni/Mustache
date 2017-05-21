@@ -64,9 +64,8 @@ If you need partials use method Template.Render(object, Dictionary<string, strin
         InCa = true
     };
 
-    var partials = new Dictionary<string, string> { { "partial", "Well, {{TaxedValue}} {{Currency}}, after taxes.\r\n" } };
+    {% raw %}var partials = new Dictionary<string, string> { { "partial", "Well, {{TaxedValue}} {{Currency}}, after taxes.\r\n" } };
 
-    {% raw %}
     const string templateString = @"Hello {{Name}}
     You have just won {{Value}} {{Currency}}!
     {{#InCa}}
