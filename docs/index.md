@@ -1,8 +1,8 @@
 # Mustache.PCL - Logic-less templates for .NET 
 
-This library is an implementation of Mustache logic-less templates specificarions.
+This library is an implementation of Mustache logic-less templates specifications.
 
-This project is created as .NET Portable Class Library for 
+The project is created as .NET Portable Class Library for 
 - .NET Framework 4.6
 - ASP.NET Core 1.0
 - Windows Universal 10.0
