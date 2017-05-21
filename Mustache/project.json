@@ -2,7 +2,8 @@
   "packOptions": {
     "summary": ".NET Portable Class Library implementation of Mustache logic-less templates",
     "tags": ["mustache", "template", "pcl", "uwp"],
-    "releaseNotes": "First release to NuGet.",
+    "releaseNotes": "",
+    "iconUrl": "https://raw.githubusercontent.com/DanieleScipioni/Mustache.PCL/master/Mustache.icon.png",
     "projectUrl": "https://danielescipioni.github.io/Mustache.PCL",
     "licenseUrl": "https://github.com/DanieleScipioni/Mustache.PCL/blob/master/LICENSE",
     "requireLicenseAcceptance": false,
