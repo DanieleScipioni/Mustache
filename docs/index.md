@@ -12,6 +12,9 @@ Mustache documentation and specifications can be found at [http://mustache.githu
 # Compliance to Mustache specifications
 This implementation is compliant to version 1.1.3 (currently this is the last version) of Mustache specifications except for the optional module *lambdas*. Specifications are available at [https://github.com/mustache/spec](https://github.com/mustache/spec).
 
+# NuGet
+This library is availabe using NuGet, [https://www.nuget.org/packages/Mustache.PCL](https://www.nuget.org/packages/Mustache.PCL).
+
 # How to use the library
 Here is a code sample to explain how to use this library
     
