@@ -22,7 +22,7 @@
 // SOFTWARE.
 // ******************************************************************************
 
-using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 
 namespace Mustache.Tests.Specs

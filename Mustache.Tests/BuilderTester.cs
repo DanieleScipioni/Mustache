@@ -23,7 +23,7 @@
 // ******************************************************************************
 
 using System;
-using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Mustache.Elements;
 
 namespace Mustache.Tests

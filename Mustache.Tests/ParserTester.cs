@@ -22,7 +22,7 @@
 // SOFTWARE.
 // ******************************************************************************
 
-using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Mustache.Elements;
 using System.Collections.Generic;
 using System.Linq;
