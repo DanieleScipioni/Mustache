@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2000
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mustache", "Mustache\Mustache.csproj", "{911D1004-B1FA-41BA-B222-AD8C027CB448}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mustache", "Mustache\Mustache.csproj", "{911D1004-B1FA-41BA-B222-AD8C027CB448}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mustache.Tests", "Mustache.Tests\Mustache.Tests.csproj", "{BC1D986F-B6B7-4F53-A90F-7BEC17E31E1B}"
 EndProject
@@ -60,5 +60,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D81917D0-95EC-48ED-A9B4-567885821F6E}
 	EndGlobalSection
 EndGlobal
