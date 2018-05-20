@@ -29,7 +29,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Mustache.Tests")]
-[assembly: AssemblyDescription("NET Standard Library implementation of Mustache logic-less templates")]
+[assembly: AssemblyDescription(".NET Standard Class Library implementation of Mustache logic-less templates")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Daniele Scipioni")]
 [assembly: AssemblyProduct("Mustache.Tests")]
