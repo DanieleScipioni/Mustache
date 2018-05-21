@@ -1,6 +1,8 @@
-# Mustache.PCL - Logic-less templates for .NET 
+# Mustache.NETStandard & Mustache.PCL - Logic-less templates for .NET 
 
-This library is an implementation of Mustache logic-less templates specifications.
+These libraries are implementations of Mustache logic-less templates specifications.
+
+Mustache.NETStandard is a .NETStandard Class Library for .NETStandard 2.0.
 
 The project is created as .NET Portable Class Library for 
 - .NET Framework 4.6
