@@ -1,5 +1,5 @@
 ﻿// ******************************************************************************
-// Copyright (c) 2017 Daniele Scipioni
+// Copyright (c) 2018 Daniele Scipioni
 // 
 // This code is licensed under the MIT License (MIT).
 //
@@ -33,7 +33,7 @@ using System.Resources;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Daniele Scipioni")]
 [assembly: AssemblyProduct("Mustache.PCL")]
-[assembly: AssemblyCopyright("Copyright © 2017 Daniele Scipioni")]
+[assembly: AssemblyCopyright("Copyright © 2018 Daniele Scipioni")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: NeutralResourcesLanguage("en")]
