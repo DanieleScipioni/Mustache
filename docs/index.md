@@ -1,8 +1,10 @@
-# Mustache.PCL - Logic-less templates for .NET 
+# Mustache.NETStandard & Mustache.PCL - Logic-less templates for .NET 
 
-This library is an implementation of Mustache logic-less templates specifications.
+These libraries are implementations of Mustache logic-less templates specifications.
 
-The project is created as .NET Portable Class Library for 
+Mustache.NETStandard is a .NETStandard Class Library for .NETStandard 2.0
+
+Mustache.PCL is a .NET Portable Class Library for 
 - .NET Framework 4.6
 - ASP.NET Core 1.0
 - Windows Universal 10.0
@@ -13,7 +15,9 @@ Mustache documentation and specifications can be found at [http://mustache.githu
 This implementation is compliant to version 1.1.3 (currently this is the last version) of Mustache specifications except for the optional module *lambdas*. Specifications are available at [https://github.com/mustache/spec](https://github.com/mustache/spec).
 
 # NuGet
-This library is availabe using NuGet, [https://www.nuget.org/packages/Mustache.PCL](https://www.nuget.org/packages/Mustache.PCL).
+Mustache.NETStandard is availabe using NuGet at [https://www.nuget.org/packages/Mustache.NETStandard](https://www.nuget.org/packages/Mustache.NETStandard).
+
+Mustache.PCL is availabe using NuGet at [https://www.nuget.org/packages/Mustache.PCL](https://www.nuget.org/packages/Mustache.PCL).
 
 # How to use the library
 Here is a code sample to explain how to use this library
