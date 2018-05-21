@@ -9,4 +9,4 @@ The project is created as .NET Portable Class Library for
 
 Mustache documentation and specifications can be found at [http://mustache.github.com](http://mustache.github.com).
 
-Documentation about this implementation can be found at https://danielescipioni.github.io/Mustache.PCL
+Documentation about this implementation can be found at https://danielescipioni.github.io/Mustache.
