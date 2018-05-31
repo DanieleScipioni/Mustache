@@ -7,12 +7,12 @@
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <Description>.NET Standard Class Library implementation of Mustache logic-less templates</Description>
     <PackageTags>mustache template .NETStandard UWP</PackageTags>
-    <PackageIconUrl>https://raw.githubusercontent.com/DanieleScipioni/Mustache.PCL/master/Mustache.icon.png</PackageIconUrl>
-    <PackageProjectUrl>https://danielescipioni.github.io/Mustache.PCL</PackageProjectUrl>
-    <PackageLicenseUrl>https://github.com/DanieleScipioni/Mustache.PCL/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/DanieleScipioni/Mustache/master/Mustache.icon.png</PackageIconUrl>
+    <PackageProjectUrl>https://danielescipioni.github.io/Mustache</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/DanieleScipioni/Mustache/blob/master/LICENSE</PackageLicenseUrl>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/DanieleScipioni/Mustache.PCL</RepositoryUrl>
+    <RepositoryUrl>https://github.com/DanieleScipioni/Mustache</RepositoryUrl>
     <Copyright>Copyright © 2018 Daniele Scipioni</Copyright>
     <PackageId>Mustache.NETStandard</PackageId>
     <NeutralLanguage></NeutralLanguage>
