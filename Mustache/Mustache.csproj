@@ -5,6 +5,7 @@
     <AssemblyName>Mustache</AssemblyName>
     <RootNamespace>Mustache</RootNamespace>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <Title>Mustache .NETStandard</Title>
     <Description>.NET Standard Class Library implementation of Mustache logic-less templates</Description>
     <PackageTags>mustache template .NETStandard UWP</PackageTags>
     <PackageIconUrl>https://raw.githubusercontent.com/DanieleScipioni/Mustache/master/Mustache.icon.png</PackageIconUrl>
