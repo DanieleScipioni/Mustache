@@ -4,7 +4,7 @@ These libraries are implementations of Mustache logic-less templates specificati
 
 Mustache.NETStandard is a .NETStandard Class Library for .NETStandard 2.0.
 
-The project is created as .NET Portable Class Library for 
+Mustache.PCL is a .NET Portable Class Library for
 - .NET Framework 4.6
 - ASP.NET Core 1.0
 - Windows Universal 10.0
