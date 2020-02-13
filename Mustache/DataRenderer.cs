@@ -150,7 +150,9 @@ namespace Mustache
 
         private object GetValue(List<string> keys)
         {
-            object value = GetValue(_currentContext, keys[0]);
+            //
+
+                        object value = GetValue(_currentContext, keys[0]);
 
             if (keys.Count == 1)
             {
@@ -162,6 +164,25 @@ namespace Mustache
                     if (value != null) return value;
                 }
                 return null;
+            }
+            else
+            {
+                if(value == null)
+                {
+                    //could we have an array index value?
+                    var arrayIndex = 0;
+                    //cast as ienumerable
+                    var contextEnumerable = _currentContext  as IEnumerable<object>;
+                    //if we can access it by the current key do so
+                    if (contextEnumerable != null && int.TryParse(keys[0], out arrayIndex))
+                    {
+                        var items = contextEnumerable.ToArray();
+                        value = items[arrayIndex];
+                    }
+                }
+                
+
+
             }
 
             if (value == null) return null;
