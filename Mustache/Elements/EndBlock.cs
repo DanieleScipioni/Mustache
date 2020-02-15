@@ -35,7 +35,7 @@ namespace Mustache.Elements
 
         public override string ToString()
         {
-            return string.Format("{0}(\"{1}\")", nameof(EndBlock), Key);
+            return $"{nameof(EndBlock)}(\"{Key}\")";
         }
     }
 }

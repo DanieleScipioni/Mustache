@@ -51,7 +51,7 @@ namespace Mustache.Elements
 
         public override string ToString()
         {
-            return string.Format("{0}(\"{1}\")", nameof(Block), Key);
+            return $"{nameof(Block)}(\"{Key}\")";
         }
     }
 }

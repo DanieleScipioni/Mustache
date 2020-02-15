@@ -42,11 +42,9 @@ namespace Mustache
 
             foreach (Element element in parts)
             {
-                var endBlock = element as EndBlock;
-                if (endBlock == null)
+                if (!(element is EndBlock endBlock))
                 {
-                    var partialDefinition = element as PartialDefinition;
-                    if (partialDefinition != null)
+                    if (element is PartialDefinition partialDefinition)
                     {
                         template.Add(partialDefinition);
                     }
@@ -68,8 +66,8 @@ namespace Mustache
 
             if (blocks.Count > 0)
             {
-                throw new MustacheException(string.Format("Sections '{0}' are without end section",
-                    string.Join(", ", blocks.Select(s => s.Key))));
+                throw new MustacheException(
+                    $"Sections '{string.Join(", ", blocks.Select(s => s.Key))}' are without end section");
             }
 
             return template;

@@ -102,10 +102,9 @@ namespace Mustache
         public void Render(Partial partial)
         {
             string oldIndent = _partialIndent;
-            _partialIndent = string.Format("{0}{1}", _partialIndent, partial.Indent);
+            _partialIndent = $"{_partialIndent}{partial.Indent}";
 
-            PartialDefinition partialDefinition;
-            _partialDefinitions.TryGetValue(partial.Key, out partialDefinition);
+            _partialDefinitions.TryGetValue(partial.Key, out PartialDefinition partialDefinition);
             partialDefinition?.Accept(this);
 
             _partialIndent = oldIndent;
@@ -176,8 +175,7 @@ namespace Mustache
 
         private static object GetValue(object dataContext, string key)
         {
-            var dictionary = dataContext as IDictionary;
-            if (dictionary != null)
+            if (dataContext is IDictionary dictionary)
             {
                 return dictionary.Contains(key) ? dictionary[key] : null;
             }
@@ -199,20 +197,20 @@ namespace Mustache
             object value = GetValue(path);
             if (value == null) yield break;
 
-            if (value is bool)
+            if (value is bool boolValue)
             {
-                if ((bool)value)
+                if (boolValue)
                 {
-                    yield return value;
+                    yield return true;
                 }
             }
             else if (value is string || value is IDictionary) // string and IDictionary are IEnumerable, so it needs to check string befoer IEnumerable
             {
                 yield return value;
             }
-            else if (value is IEnumerable)
+            else if (value is IEnumerable enumerable)
             {
-                foreach (object item in (IEnumerable)value)
+                foreach (object item in enumerable)
                 {
                     yield return item;
                 }

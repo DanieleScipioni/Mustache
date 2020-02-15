@@ -33,12 +33,11 @@ namespace Mustache.Elements
         internal override void Accept(IElementRenderer renderer)
         {
             renderer.Render(this);
-
         }
 
         public override string ToString()
         {
-            return string.Format("{0}(\"{1}\")", nameof(Section), Key);
+            return $"{nameof(Section)}(\"{Key}\")";
         }
     }
 }

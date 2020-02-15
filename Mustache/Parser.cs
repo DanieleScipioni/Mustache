@@ -122,8 +122,7 @@ namespace Mustache
 
         private bool HandleClosePartialDefinition(Tag tag)
         {
-            var block = tag as Block;
-            if (block != null)
+            if (tag is Block block)
             {
                 _blocks.Push(block);
             }

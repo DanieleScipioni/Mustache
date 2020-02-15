@@ -32,7 +32,7 @@ namespace Mustache.Elements
 
         public override string ToString()
         {
-            return string.Format("{0}(\"{1}\")", nameof(PartialDefinition), Key);
+            return $"{nameof(PartialDefinition)}(\"{Key}\")";
         }
 
         internal override void Accept(IElementRenderer renderer)

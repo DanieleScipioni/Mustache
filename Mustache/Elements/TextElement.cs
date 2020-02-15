@@ -40,7 +40,7 @@ namespace Mustache.Elements
 
         public override string ToString()
         {
-            return string.Format("{0}(\"{1}\")", nameof(TextElement), Text);
+            return $"{nameof(TextElement)}(\"{Text}\")";
         }
     }
 }
