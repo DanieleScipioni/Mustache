@@ -1,5 +1,5 @@
 ﻿// ******************************************************************************
-// Copyright (c) 2018 Daniele Scipioni
+// Copyright (c) 2017 Daniele Scipioni
 // 
 // This code is licensed under the MIT License (MIT).
 //
