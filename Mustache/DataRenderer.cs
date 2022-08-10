@@ -150,35 +150,39 @@ namespace Mustache
         private object GetValue(ArraySegment<string> keys)
         {
             // ReSharper disable once PossibleNullReferenceException
-            object value = GetValue(_currentContext, keys.Array[keys.Offset]);
+            (bool keyFound, object value) = GetValue(_currentContext, keys.Array[keys.Offset]);
 
-            if (keys.Count == 1)
+            if (keyFound)
             {
-                if (value != null) return value;
-
-                foreach (object context in _parentContexts)
-                {
-                    value = GetValue(context, keys.Array[keys.Offset]);
-                    if (value != null) return value;
-                }
-                return null;
+                if (value == null || keys.Count == 1) return value;
+                _parentContexts.Push(_currentContext);
+                _currentContext = value;
+                value = GetValue(new ArraySegment<string>(keys.Array, keys.Offset + 1, keys.Count - 1));
+                _currentContext = _parentContexts.Pop();
+                return value;
             }
 
-            if (value == null) return null;
+            foreach (object context in _parentContexts)
+            {
+                (keyFound, value) = GetValue(context, keys.Array[keys.Offset]);
+                if (!keyFound) continue;
 
-            _parentContexts.Push(_currentContext);
-            _currentContext = value;
-            value = GetValue(new ArraySegment<string>(keys.Array, keys.Offset + 1, keys.Count - 1));
-            _currentContext = _parentContexts.Pop();
+                if (value == null || keys.Count == 1) return value;
+                _parentContexts.Push(_currentContext);
+                _currentContext = value;
+                value = GetValue(new ArraySegment<string>(keys.Array, keys.Offset + 1, keys.Count - 1));
+                _currentContext = _parentContexts.Pop();
+                return value;
+            }
 
-            return value;
+            return null;
         }
 
-        private static object GetValue(object dataContext, string key)
+        private static (bool keyFound, object value) GetValue(object dataContext, string key)
         {
             if (dataContext is IDictionary dictionary)
             {
-                return dictionary.Contains(key) ? dictionary[key] : null;
+                return dictionary.Contains(key) ? (true, dictionary[key]) : (false, null);
             }
 
             Type type = dataContext.GetType();
@@ -186,11 +190,11 @@ namespace Mustache
             FieldInfo fieldInfo = type.GetField(key);
             if (fieldInfo != null)
             {
-                return fieldInfo.GetValue(dataContext);
+                return (true, fieldInfo.GetValue(dataContext));
             }
 
             PropertyInfo propertyInfo = type.GetProperty(key);
-            return propertyInfo?.GetValue(dataContext);
+            return propertyInfo != null ? (true, propertyInfo.GetValue(dataContext)) : (false, null);
         }
 
         private IEnumerable<object> GetValuesForSection(string path)
