@@ -22,6 +22,7 @@
 // SOFTWARE.
 // ******************************************************************************
 
+using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Mustache.Tests.Specs
@@ -33,7 +34,7 @@ namespace Mustache.Tests.Specs
         [TestCategory("SpecsComments")]
         public void InlineComment()
         {
-            string templated = Template.Compile("12345{{! Comment Block! }}67890").Render(null);
+            string templated = Template.Compile("12345{{! Comment Block! }}67890").Render(new object());
             Assert.AreEqual("1234567890", templated, "Comment blocks should be removed from the template");
         }
 
@@ -44,7 +45,7 @@ namespace Mustache.Tests.Specs
             string templated = Template.Compile(@"12345{{!
                         This is a
                     multi-line comment...
-            }}67890").Render(null);
+            }}67890").Render(new object());
             Assert.AreEqual("1234567890", templated, "Multiline comments should be permitted");
         }
 
@@ -54,7 +55,7 @@ namespace Mustache.Tests.Specs
         {
             string templated = Template.Compile(@"Begin.
 {{! Comment Block! }}
-End.").Render(null);
+End.").Render(new object());
 
             Assert.AreEqual(@"Begin.
 End.", templated, "All standalone comment lines should be removed");
@@ -66,8 +67,7 @@ End.", templated, "All standalone comment lines should be removed");
         {
             string templated = Template.Compile(@"Begin.
     {{! Comment Block! }}
-End.").Render(null);
-
+End.").Render(new object());
             Assert.AreEqual(@"Begin.
 End.", templated, "All standalone comment lines should be removed");
         }
@@ -76,8 +76,7 @@ End.", templated, "All standalone comment lines should be removed");
         [TestCategory("SpecsComments")]
         public void StandaloneLineEndingsComment()
         {
-            string templated = Template.Compile("\r\n{{! Standalone Comment }}\r\n").Render(null);
-
+            string templated = Template.Compile("\r\n{{! Standalone Comment }}\r\n").Render(new object());
             Assert.AreEqual("\r\n", templated, "'\\r\\n' should be considered a newline for standalone tags");
         }
 
@@ -85,8 +84,7 @@ End.", templated, "All standalone comment lines should be removed");
         [TestCategory("SpecsComments")]
         public void StandaloneWithoutPreviousLineComment()
         {
-            string templated = Template.Compile("  {{! I'm Still Standalone }}\n!").Render(null);
-
+            string templated = Template.Compile("  {{! I'm Still Standalone }}\n!").Render(new object());
             Assert.AreEqual("!", templated, @"'\r\n' should be considered a newline for standalone tags");
         }
 
@@ -94,7 +92,7 @@ End.", templated, "All standalone comment lines should be removed");
         [TestCategory("SpecsComments")]
         public void StandaloneWithoutNewlineComment()
         {
-            string templated = Template.Compile("!\n  {{! I'm Still Standalone }}").Render(null);
+            string templated = Template.Compile("!\n  {{! I'm Still Standalone }}").Render(new object());
             Assert.AreEqual("!\n", templated, "Standalone tags should not require a newline to follow them");
         }
 
@@ -107,7 +105,7 @@ End.", templated, "All standalone comment lines should be removed");
 Something's going on here...
 }}
 End.";
-            string templated = Template.Compile(template).Render(null);
+            string templated = Template.Compile(template).Render(new object());
             Assert.AreEqual(@"Begin.
 End.", templated, "All standalone comment lines should be removed");
         }
@@ -121,7 +119,7 @@ End.", templated, "All standalone comment lines should be removed");
       Something's going on here...
   }}
 End.";
-            string templated = Template.Compile(template).Render(null);
+            string templated = Template.Compile(template).Render(new object());
             Assert.AreEqual(@"Begin.
 End.", templated, "All standalone comment lines should be removed");
         }
@@ -131,7 +129,7 @@ End.", templated, "All standalone comment lines should be removed");
         public void IndentedInlineComment()
         {
             const string template = "  12 {{! 34 }}\n";
-            string templated = Template.Compile(template).Render(null);
+            string templated = Template.Compile(template).Render(new object());
             Assert.AreEqual("  12 \n", templated, "Inline comments should not strip whitespace");
         }
 
@@ -140,8 +138,24 @@ End.", templated, "All standalone comment lines should be removed");
         public void SurroundingWhitespaceComment()
         {
             const string template = "12345 {{! Comment Block! }} 67890";
-            string templated = Template.Compile(template).Render(null);
+            string templated = Template.Compile(template).Render(new object());
             Assert.AreEqual("12345  67890", templated, "Comment removal should preserve surrounding whitespace");
+        }
+
+        [TestMethod]
+        [TestCategory("SpecsComments")]
+        public void VariableNameCollisionComment()
+        {
+            var data = new Dictionary<string, object>
+            {
+                {"! comment", 1},
+                {"! comment ", 2},
+                {"!comment", 3},
+                {"comment", 4}
+            };
+            const string template = "'comments never show: >{{! comment }}<'";
+            string templated = Template.Compile(template).Render(data);
+            Assert.AreEqual("'comments never show: ><'", templated, "Comments must never render, even if variable with same name exists");
         }
     }
 }

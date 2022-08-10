@@ -142,6 +142,36 @@ namespace Mustache.Tests.Specs
 
         [TestMethod]
         [TestCategory("SpecsInterpolation")]
+        public void BasicNullInterpolation()
+        {
+            const string template = "\"I ({{cannot}}) be seen!\"";
+            const string expected = "\"I () be seen!\"";
+            string templated = Template.Compile(template).Render(new { cannot = (object)null });
+            Assert.AreEqual(expected, templated, "Nulls should interpolate as the empty string");
+        }
+
+        [TestMethod]
+        [TestCategory("SpecsInterpolation")]
+        public void TripleMustacheNullInterpolation()
+        {
+            const string template = "\"I ({{{cannot}}}) be seen!\"";
+            const string expected = "\"I () be seen!\"";
+            string templated = Template.Compile(template).Render(new { cannot = (object)null });
+            Assert.AreEqual(expected, templated, "Nulls should interpolate as the empty string");
+        }
+
+        [TestMethod]
+        [TestCategory("SpecsInterpolation")]
+        public void AmpersandNullInterpolation()
+        {
+            const string template = "\"I ({{&cannot}}) be seen!\"";
+            const string expected = "\"I () be seen!\"";
+            string templated = Template.Compile(template).Render(new { cannot = (object)null });
+            Assert.AreEqual(expected, templated, "Nulls should interpolate as the empty string");
+        }
+
+        [TestMethod]
+        [TestCategory("SpecsInterpolation")]
         public void BasicContextMissInterpolation()
         {
             const string template = "I ({{cannot}}) be seen!";
@@ -258,6 +288,56 @@ namespace Mustache.Tests.Specs
             };
             string templated = Template.Compile(template).Render(data);
             Assert.AreEqual(expected, templated, "Dotted names should be resolved against former resolutions");
+        }
+
+        [TestMethod]
+        public void ImplicitIteratorsBasicInterpolationTest()
+        {
+            const string data = "world";
+            const string template = "Hello, {{.}}!";
+            const string expected = "Hello, world!";
+            string templated = Template.Compile(template).Render(data);
+            Assert.AreEqual(expected, templated, "Unadorned tags should interpolate content into the template");
+        }
+
+        [TestMethod]
+        public void ImplicitIteratorsHtmlEscapingTest()
+        {
+            const string data = "& \" < >";
+            const string template = "These characters should be HTML escaped: {{.}}";
+            const string expected = "These characters should be HTML escaped: &amp; &quot; &lt; &gt;";
+            string templated = Template.Compile(template).Render(data);
+            Assert.AreEqual(expected, templated, "Basic interpolation should be HTML escaped");
+        }
+
+        [TestMethod]
+        public void ImplicitIteratorsTripleMustachTest()
+        {
+            const string data = "& \" < >";
+            const string template = "These characters should not be HTML escaped: {{{.}}}";
+            const string expected = "These characters should not be HTML escaped: & \" < >";
+            string templated = Template.Compile(template).Render(data);
+            Assert.AreEqual(expected, templated, "Triple mustaches should interpolate without HTML escaping");
+        }
+
+        [TestMethod]
+        public void ImplicitIteratorsAmpersandTest()
+        {
+            const string data = "& \" < >";
+            const string template = "These characters should not be HTML escaped: {{&.}}";
+            const string expected = "These characters should not be HTML escaped: & \" < >";
+            string templated = Template.Compile(template).Render(data);
+            Assert.AreEqual(expected, templated, "Ampersand should interpolate without HTML escaping");
+        }
+
+        [TestMethod]
+        public void ImplicitIteratorsBasicIntegerInterpolationTest()
+        {
+            const int data = 85;
+            const string template = "\"{{.}} miles an hour!\"";
+            const string expected = "\"85 miles an hour!\"";
+            string templated = Template.Compile(template).Render(data);
+            Assert.AreEqual(expected, templated, "Integers should interpolate seamlessly");
         }
 
         [TestMethod]

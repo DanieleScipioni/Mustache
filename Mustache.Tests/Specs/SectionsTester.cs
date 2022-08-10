@@ -56,6 +56,18 @@ namespace Mustache.Tests.Specs
 
         [TestMethod]
         [TestCategory("SpecsSections")]
+        public void NullIsFalsey()
+        {
+            var data = new Dictionary<string, object> { { "null", null } };
+            const string template = "\"{{#null}}This should not be rendered.{{/null}}\"";
+            const string expected = "\"\"";
+
+            string templated = Template.Compile(template).Render(data);
+            Assert.AreEqual(expected, templated, "Null is falsey");
+        }
+
+        [TestMethod]
+        [TestCategory("SpecsSections")]
         public void Context()
         {
             var data = new Dictionary<string, object> {{"context", new Dictionary<string, object> {{"name", "Joe"}}}};
@@ -68,15 +80,101 @@ namespace Mustache.Tests.Specs
 
         [TestMethod]
         [TestCategory("SpecsSections")]
+        public void ParentContexts()
+        {
+            dynamic data = new
+            {
+                a = "foo",
+                b = "wrong",
+                sec = (dynamic) new
+                {
+                    b = "bar"
+                },
+                c = (dynamic) new
+                {
+                    d = "baz"
+                }
+            };
+
+            const string template = "\"{{#sec}}{{a}}, {{b}}, {{c.d}}{{/sec}}\"";
+            const string expected = "\"foo, bar, baz\"";
+
+            Template compile = Template.Compile(template);
+            string templated = compile.Render(data);
+            Assert.AreEqual(expected, templated, "Names missing in the current context are looked up in the stack");
+        }
+
+        [TestMethod]
+        [TestCategory("SpecsSections")]
+        public void VariableTest()
+        {
+            var data = new Dictionary<string, object> {{"foo", "bar"}};
+            const string template = "\"{{#foo}}{{.}} is {{foo}}{{/foo}}\"";
+            const string expected = "\"bar is bar\"";
+
+            string templated = Template.Compile(template).Render(data);
+            Assert.AreEqual(expected, templated, "Non-false sections have their value at the top of context, accessible as {{.}} or through the parent context. This gives a simple way to display content conditionally if a variable exists");
+        }
+
+        [TestMethod]
+        [TestCategory("SpecsSections")]
+        public void ListContexts()
+        {
+            var data = new Dictionary<string, object>
+            {
+                {
+                    "tops", new List<object>
+                    {
+                        new Dictionary<string, object>
+                        {
+                            {
+                                "tname", new Dictionary<string, object>
+                                {
+                                    {"upper", "A"},
+                                    {"lower", "a"}
+                                }
+                            },
+                            {
+                                "middles", new List<object>
+                                {
+                                    new Dictionary<string, object>
+                                    {
+                                        {"mname", "1"},
+                                        {"bottoms", new List<object>
+                                        {
+                                            new Dictionary<string, object> {{"bname", "x"}},
+                                            new Dictionary<string, object> {{"bname", "y"}}
+                                        }}
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            const string template = "{{#tops}}{{#middles}}{{tname.lower}}{{mname}}.{{#bottoms}}{{tname.upper}}{{mname}}{{bname}}.{{/bottoms}}{{/middles}}{{/tops}}";
+            const string expected = "a1.A1x.A1y.";
+
+            string templated = Template.Compile(template).Render(data);
+            Assert.AreEqual(expected, templated, "All elements on the context stack should be accessible within lists");
+        }
+
+        [TestMethod]
+        [TestCategory("SpecsSections")]
         public void DeeplyNestedContexts()
         {
             var data = new Dictionary<string, object>
             {
-                { "a", new Dictionary<string, object> { { "one", 1 } } },
-                { "b", new Dictionary<string, object> { { "two", 2 } } },
-                { "c", new Dictionary<string, object> { { "three", 3 } } },
-                { "d", new Dictionary<string, object> { { "four", 4 } } },
-                { "e", new Dictionary<string, object> { { "five", 5 } } }
+                {"a", new Dictionary<string, object> {{"one", 1}}},
+                {"b", new Dictionary<string, object> {{"two", 2}}},
+                {
+                    "c", new Dictionary<string, object>
+                    {
+                        {"three", 3},
+                        {"d", new Dictionary<string, object> {{"four", 4}, {"five", 5}}}
+                    }
+                }
             };
 
             const string template = @"{{#a}}
@@ -87,9 +185,11 @@ namespace Mustache.Tests.Specs
 {{one}}{{two}}{{three}}{{two}}{{one}}
 {{#d}}
 {{one}}{{two}}{{three}}{{four}}{{three}}{{two}}{{one}}
-{{#e}}
+{{#five}}
 {{one}}{{two}}{{three}}{{four}}{{five}}{{four}}{{three}}{{two}}{{one}}
-{{/e}}
+{{one}}{{two}}{{three}}{{four}}{{.}}6{{.}}{{four}}{{three}}{{two}}{{one}}
+{{one}}{{two}}{{three}}{{four}}{{five}}{{four}}{{three}}{{two}}{{one}}
+{{/five}}
 {{one}}{{two}}{{three}}{{four}}{{three}}{{two}}{{one}}
 {{/d}}
 {{one}}{{two}}{{three}}{{two}}{{one}}
@@ -103,6 +203,8 @@ namespace Mustache.Tests.Specs
 121
 12321
 1234321
+123454321
+12345654321
 123454321
 1234321
 12321

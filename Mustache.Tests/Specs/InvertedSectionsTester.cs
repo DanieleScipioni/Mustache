@@ -56,6 +56,17 @@ namespace Mustache.Tests.Specs
 
         [TestMethod]
         [TestCategory("SpecsInvertedSections")]
+        public void NullIsFalsey()
+        {
+            const string template = "\"{{^null}}This should be rendered.{{/null}}\"";
+            const string expected = "\"This should be rendered.\"";
+
+            string templated = Template.Compile(template).Render(new Dictionary<string, object> {{"null", null}});
+            Assert.AreEqual(expected, templated, "Null is falsey");
+        }
+
+        [TestMethod]
+        [TestCategory("SpecsInvertedSections")]
         public void Context()
         {
             const string template = "\"{{^context}}Hi {{name}}.{{/context}}\"";
