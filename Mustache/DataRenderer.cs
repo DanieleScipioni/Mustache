@@ -142,14 +142,15 @@ namespace Mustache
         {
             if (path == ".") return _currentContext;
 
-            List<string> keys = path.Split('.').ToList();
+            string[] keys = path.Split('.');
 
-            return keys.Count == 0 ? null : GetValue(keys);
+            return keys.Length == 0 ? null : GetValue(new ArraySegment<string>(keys));
         }
 
-        private object GetValue(List<string> keys)
+        private object GetValue(ArraySegment<string> keys)
         {
-            object value = GetValue(_currentContext, keys[0]);
+            // ReSharper disable once PossibleNullReferenceException
+            object value = GetValue(_currentContext, keys.Array[keys.Offset]);
 
             if (keys.Count == 1)
             {
@@ -157,7 +158,7 @@ namespace Mustache
 
                 foreach (object context in _parentContexts)
                 {
-                    value = GetValue(context, keys[0]);
+                    value = GetValue(context, keys.Array[keys.Offset]);
                     if (value != null) return value;
                 }
                 return null;
@@ -167,7 +168,7 @@ namespace Mustache
 
             _parentContexts.Push(_currentContext);
             _currentContext = value;
-            value = GetValue(keys.GetRange(1, keys.Count - 1));
+            value = GetValue(new ArraySegment<string>(keys.Array, keys.Offset + 1, keys.Count - 1));
             _currentContext = _parentContexts.Pop();
 
             return value;
