@@ -9,10 +9,10 @@ Mustache.PCL is a .NET Portable Class Library for
 - ASP.NET Core 1.0
 - Windows Universal 10.0
 
-Mustache documentation and specifications can be found at [http://mustache.github.com](http://mustache.github.com).
+Mustache documentation and specifications can be found at [http://mustache.github.io](http://mustache.github.io).
 
 # Compliance to Mustache specifications
-This implementation is compliant to version 1.1.3 (currently this is the last version) of Mustache specifications except for the optional module *lambdas*. Specifications are available at [https://github.com/mustache/spec](https://github.com/mustache/spec).
+This implementation is compliant to version 1.2.2 (at today 2022.08.10 this is the last version) of Mustache specifications except for the optional module *lambdas*, *inheritance* and *dynamic-names*. Specifications are available at [https://github.com/mustache/spec](https://github.com/mustache/spec).
 
 # NuGet
 Mustache.NETStandard is availabe using NuGet at [https://www.nuget.org/packages/Mustache.NETStandard](https://www.nuget.org/packages/Mustache.NETStandard).
