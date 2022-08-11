@@ -30,7 +30,6 @@ namespace Mustache.Tests
     [TestClass]
     public class HtmlEncodeTester
     {
-
         [TestMethod]
         [TestCategory("WebUtility.HtmlEncode")]
         public void WebUtilityHtmlEncodeTester()
