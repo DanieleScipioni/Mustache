@@ -7,10 +7,12 @@
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <Title>Mustache .NETStandard</Title>
     <Description>.NET Standard Class Library implementation of Mustache logic-less templates</Description>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageTags>mustache template .NETStandard UWP</PackageTags>
-    <PackageIconUrl>https://raw.githubusercontent.com/DanieleScipioni/Mustache/master/Mustache.icon.png</PackageIconUrl>
+    <PackageIcon>Mustache.icon.png</PackageIcon>
     <PackageProjectUrl>https://danielescipioni.github.io/Mustache</PackageProjectUrl>
-    <PackageLicenseUrl>https://github.com/DanieleScipioni/Mustache/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageLicenseExpression></PackageLicenseExpression>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/DanieleScipioni/Mustache</RepositoryUrl>
@@ -23,5 +25,20 @@
     <FileVersion>1.0.0.0</FileVersion>
     <Version>1.0.0</Version>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+    <None Include="..\Mustache.icon.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
 
 </Project>
