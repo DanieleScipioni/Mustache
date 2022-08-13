@@ -31,7 +31,7 @@ namespace Mustache.Tests.Specs.Customs
     public class SectionsTester
     {
         [TestMethod]
-        [TestCategory("SpecsSections")]
+        [TestCategory("CustomSections")]
         public void NestedContext()
         {
             var dictionary = new Dictionary<string, object>
@@ -176,6 +176,7 @@ namespace Mustache.Tests.Specs.Customs
         }
 
         [TestMethod]
+        [TestCategory("CustomSections")]
         public void NestedContextWithNullTest()
         {
             dynamic data = new
