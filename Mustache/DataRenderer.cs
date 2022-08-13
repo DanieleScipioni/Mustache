@@ -182,7 +182,10 @@ namespace Mustache
         {
             if (dataContext is IDictionary dictionary)
             {
-                return dictionary.Contains(key) ? (true, dictionary[key]) : (false, null);
+                if (!dictionary.Contains(key)) return (false, null);
+
+                object value = dictionary[key];
+                return value is Func<string, object> lambda ? (true, lambda(null)) : (true, value);
             }
 
             Type type = dataContext.GetType();
@@ -194,7 +197,18 @@ namespace Mustache
             }
 
             PropertyInfo propertyInfo = type.GetProperty(key);
-            return propertyInfo != null ? (true, propertyInfo.GetValue(dataContext)) : (false, null);
+            if (propertyInfo != null)
+            {
+                object value = propertyInfo.GetValue(dataContext);
+                return value is Func<string, object> lambda ? (true, lambda(null)) : (true, value);
+            }
+
+            MethodInfo methodInfo = type.GetMethod(key, BindingFlags.Public | BindingFlags.Instance);
+            if (methodInfo == null) return (false, null);
+
+            ParameterInfo[] parameters = methodInfo.GetParameters();
+            if (parameters.Length != 1 || parameters[0].ParameterType != typeof(string)) return (false, null);
+            return methodInfo.ReturnType == typeof(string) ? (true, methodInfo.Invoke(dataContext, new object[] {null})) : (false, null);
         }
 
         private IEnumerable<object> GetValuesForSection(string path)

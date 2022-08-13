@@ -97,6 +97,8 @@
     <SDKReference Include="TestPlatform.Universal, Version=$(UnitTestPlatformVersion)" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Specs\Customs\LambdasTester.cs" />
+    <Compile Include="Specs\LambdasTester.cs" />
     <Compile Include="Specs\Customs\SectionsTester.cs" />
     <Compile Include="DataRendererTester.cs" />
     <Compile Include="Elements\InvertedSectionTester.cs" />
