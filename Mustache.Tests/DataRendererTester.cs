@@ -49,13 +49,13 @@ namespace Mustache.Tests
 
         private class ClassWithFields
         {
-#pragma warning disable 414
+            // ReSharper disable NotAccessedField.Local
             public string Name;
             public string Value;
             public string TaxedValue;
             public string Currency;
             public string InCa;
-#pragma warning restore 414
+            // ReSharper restore NotAccessedField.Local
         }
 
         [TestMethod]

@@ -34,8 +34,7 @@ namespace Mustache.Elements
 
         public void Add(Element element)
         {
-            var partialDefinition = element as PartialDefinition;
-            if (partialDefinition == null)
+            if (!(element is PartialDefinition _))
             {
                 _elements.Add(element);
             }

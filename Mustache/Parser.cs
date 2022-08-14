@@ -122,18 +122,20 @@ namespace Mustache
 
         private bool HandleClosePartialDefinition(Tag tag)
         {
-            if (tag is Block block)
+            switch (tag)
             {
-                _blocks.Push(block);
-            }
-            else if (tag is EndBlock)
-            {
-                var partialDefinition = _blocks.Pop() as PartialDefinition;
-                if (partialDefinition == null) return false;
+                case Block block:
+                    _blocks.Push(block);
+                    break;
+                case EndBlock _:
+                {
+                    if (!(_blocks.Pop() is PartialDefinition _)) return false;
 
-                SetDelimiters(MustacheOpenDelimiter, MustacheCloseDelimiter);
-                return true;
+                    SetDelimiters(MustacheOpenDelimiter, MustacheCloseDelimiter);
+                    return true;
+                }
             }
+
             return false;
         }
 

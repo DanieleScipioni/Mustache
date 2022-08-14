@@ -26,8 +26,6 @@ namespace Mustache.Elements
 {
     public class Section : Block
     {
-        public string Text { get; set; }
-
         public Section(string key) : base(key) {}
 
         internal override void Accept(IElementRenderer renderer)

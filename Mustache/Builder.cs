@@ -49,8 +49,7 @@ namespace Mustache
                         template.Add(partialDefinition);
                     }
                     currentBlock.Add(element);
-                    var block = element as Block;
-                    if (block == null) continue;
+                    if (!(element is Block block)) continue;
                     blocks.Push(currentBlock);
                     currentBlock = block;
                 }
