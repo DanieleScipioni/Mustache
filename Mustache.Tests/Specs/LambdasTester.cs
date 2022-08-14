@@ -59,5 +59,21 @@ namespace Mustache.Tests.Specs
             string templated = Template.Compile(template).Render(data);
             Assert.AreEqual(expected, templated, "A lambda's return value should be parsed");
         }
+
+        [TestMethod]
+        [TestCategory("SpecsLamndas")]
+        public void InterpolationAlternateDelimitersTest()
+        {
+            dynamic data = new
+            {
+                planet = "world",
+                lambda = (Func<string, object>)(rawText => "|planet| => {{planet}}")
+            };
+            const string template = "{{= | | =}}\nHello, (|&lambda|)!";
+            const string expected = "Hello, (|planet| => world)!";
+
+            string templated = Template.Compile(template).Render(data);
+            Assert.AreEqual(expected, templated, "A lambda's return value should parse with the default delimiters");
+        }
     }
 }
