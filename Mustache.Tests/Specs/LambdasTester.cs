@@ -75,5 +75,23 @@ namespace Mustache.Tests.Specs
             string templated = Template.Compile(template).Render(data);
             Assert.AreEqual(expected, templated, "A lambda's return value should parse with the default delimiters");
         }
+
+        [TestMethod]
+        [TestCategory("SpecsLamndas")]
+        public void InterpolationMultipleCallsTest()
+        {
+            var calls = 0;
+            dynamic data = new 
+            {
+                planet = "world",
+                lambda = (Func<string, object>)(rawText => ++calls)
+            };
+
+            const string template = "{{lambda}} == {{{lambda}}} == {{lambda}}";
+            const string expected = "1 == 2 == 3";
+
+            string templated = Template.Compile(template).Render(data);
+            Assert.AreEqual(expected, templated, "Interpolated lambdas should not be cached");
+        }
     }
 }
