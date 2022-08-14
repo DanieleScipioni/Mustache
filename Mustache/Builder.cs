@@ -29,9 +29,9 @@ using System.Linq;
 
 namespace Mustache
 {
-    public static class Builder
+    internal static class Builder
     {
-        public static Template Build(IEnumerable<Element> parts)
+        internal static Template Build(IEnumerable<Element> parts)
         {
             if (parts == null) throw new ArgumentNullException(nameof(parts));
 

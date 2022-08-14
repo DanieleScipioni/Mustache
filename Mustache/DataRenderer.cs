@@ -34,7 +34,7 @@ using System.Text.RegularExpressions;
 
 namespace Mustache
 {
-    public class DataRenderer : IElementRenderer
+    internal class DataRenderer : IElementRenderer
     {
         private static readonly Regex NewLineRegex = new Regex("\n(?!$)");
         private static readonly Regex FirsNewLineRegex = new Regex("^\r?\n");

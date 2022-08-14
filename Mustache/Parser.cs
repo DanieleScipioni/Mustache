@@ -29,7 +29,7 @@ using System.Text.RegularExpressions;
 
 namespace Mustache
 {
-    public class Parser
+    internal class Parser
     {
         private const string MustacheOpenDelimiter = "{{";
         private const string MustacheCloseDelimiter = "}}";
@@ -64,7 +64,7 @@ namespace Mustache
                 : new Regex($@"({Regex.Escape(_closeDelimiter)})([\t\f\v ]*(\r?\n|$))?");
         }
 
-        public IEnumerable<Element> Parse()
+        internal IEnumerable<Element> Parse()
         {
             var currentPos = 0;
             var previousTagWasClosePartialDefinition = false;
