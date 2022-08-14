@@ -93,5 +93,21 @@ namespace Mustache.Tests.Specs
             string templated = Template.Compile(template).Render(data);
             Assert.AreEqual(expected, templated, "Interpolated lambdas should not be cached");
         }
+
+        [TestMethod]
+        [TestCategory("SpecsLamndas")]
+        public void EscapingTest()
+        {
+            dynamic data = new 
+            {
+                lambda = (Func<string, object>)(rawText => ">")
+            };
+
+            const string template = "<{{lambda}}{{{lambda}}}";
+            const string expected = "<&gt;>";
+
+            string templated = Template.Compile(template).Render(data);
+            Assert.AreEqual(expected, templated, "Lambda results should be appropriately escaped");
+        }
     }
 }

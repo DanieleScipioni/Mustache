@@ -194,8 +194,8 @@ namespace Mustache
                 object lambdaResult = lambda(null);
                 if (!(lambdaResult is string lambdaString)) return (true, lambdaResult);
 
-                RenderLambdaResult(lambdaString);
-                return (true, string.Empty);
+                value = RenderLambdaResult(lambdaString);
+                return (true, value);
             }
 
             Type type = dataContext.GetType();
@@ -217,8 +217,8 @@ namespace Mustache
                 object lambdaResult = lambda(null);
                 if (!(lambdaResult is string lambdaString)) return (true, lambdaResult);
 
-                RenderLambdaResult(lambdaString);
-                return (true, string.Empty);
+                value = RenderLambdaResult(lambdaString);
+                return (true, value);
             }
 
             MethodInfo methodInfo = type.GetMethod(key, BindingFlags.Public | BindingFlags.Instance);
@@ -232,18 +232,18 @@ namespace Mustache
                 object lambdaResult = methodInfo.Invoke(dataContext, new object[] {null});
                 if (!(lambdaResult is string lambdaString)) return (true, lambdaResult);
 
-                RenderLambdaResult(lambdaString);
-                return (true, string.Empty);
+                string value = RenderLambdaResult(lambdaString);
+                return (true, value);
             }
         }
 
-        private void RenderLambdaResult(string template)
+        private string RenderLambdaResult(string template)
         {
             if (!_lambdaTemplates.TryGetValue(template, out Template compiledTemplate))
             {
                 _lambdaTemplates[template] = compiledTemplate = Template.Compile(template);
             }
-            Render(compiledTemplate);
+            return compiledTemplate.Render(_currentContext);
         }
 
         private IEnumerable<object> GetValuesForSection(string path)
