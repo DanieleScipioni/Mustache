@@ -45,7 +45,7 @@ namespace Mustache.Tests.Specs.Customs
                 }
             };
 
-            var classObject = new LambdaObject();
+            var classObject = new InterpolationTestLambdaObject();
 
             dynamic dynamicObject = new
             {
@@ -61,13 +61,91 @@ namespace Mustache.Tests.Specs.Customs
             templated = compiledTemplate.Render(dynamicObject);
             Assert.AreEqual(expected, templated, "dynamicObject");
         }
+
+        [TestMethod]
+        [TestCategory("CustomLamndas")]
+        public void InterpolationExpansionTest()
+        {
+            const string expected = "Hello, world!";
+            Template compiledTemplate = Template.Compile("Hello, {{Lambda}}!");
+
+            var dictionary = new Dictionary<string, object>
+            {
+                {"Planet", "world"},
+                {"Lambda", (Func<string, object>) (rawText => "{{Planet}}")}
+            };
+
+            var classObject = new InterpolationExpansionTestLambdaObject();
+
+            dynamic dynamicObject = new
+            {
+                Planet = "world",
+                Lambda = (Func<string, object>)(rawText => "{{Planet}}")
+            };
+
+            string templated = compiledTemplate.Render(dictionary);
+            Assert.AreEqual(expected, templated, "dictionary");
+
+            templated = compiledTemplate.Render(classObject);
+            Assert.AreEqual(expected, templated, "classObject");
+
+            templated = compiledTemplate.Render(dynamicObject);
+            Assert.AreEqual(expected, templated, "dynamicObject");
+        }
+
+        [TestMethod]
+        public void VoidLambdaTest()
+        {
+            const string expected = "Hello, world!";
+            Template compiledTemplate = Template.Compile("Hello, {{Planet}}{{Lambda}}!");
+
+            var dictionary = new Dictionary<string, object>
+            {
+                {"Planet", "world"},
+                {"Lambda", (Action) (() => { })}
+            };
+
+            var classObject = new VoidLambdaObject();
+
+            dynamic dynamicObject = new
+            {
+                Planet = "world",
+                Lambda = (Action) (() => { })
+            };
+
+            string templated = compiledTemplate.Render(dictionary);
+            Assert.AreEqual(expected, templated, "dictionary");
+
+            templated = compiledTemplate.Render(classObject);
+            Assert.AreEqual(expected, templated, "classObject");
+
+            templated = compiledTemplate.Render(dynamicObject);
+            Assert.AreEqual(expected, templated, "dynamicObject");
+        }
     }
 
-    internal class LambdaObject
+    internal class InterpolationTestLambdaObject
     {
         public string Lambda(string rawText)
         {
             return "world";
         }
+    }
+
+    internal class InterpolationExpansionTestLambdaObject
+    {
+        public string Planet = "world";
+
+        public string Lambda(string rawText)
+        {
+            return "{{Planet}}";
+        }
+    }
+
+    internal class VoidLambdaObject
+    {
+        public string Planet = "world";
+
+        public void Lambda(){}
     }
 }

@@ -29,15 +29,19 @@ namespace Mustache
 {
     public class Template : PartialDefinition
     {
-        private readonly Dictionary<string, PartialDefinition> _partialDefinitions =
-            new Dictionary<string, PartialDefinition>();
-
         public static Template Compile(string template)
         {
             return Builder.Build(new Parser(template).Parse());
         }
 
-        internal Template() : base(string.Empty) {}
+        private readonly Dictionary<string, PartialDefinition> _partialDefinitions = new Dictionary<string, PartialDefinition>();
+
+        private readonly Dictionary<string, Template> _lambdaTemplates;
+
+        internal Template() : base(string.Empty)
+        {
+            _lambdaTemplates = new Dictionary<string, Template>();
+        }
 
         internal void Add(PartialDefinition partialDefinition)
         {
@@ -55,7 +59,7 @@ namespace Mustache
                 }
             }
 
-            var dataRenderer = new DataRenderer(data, currentPartials);
+            var dataRenderer = new DataRenderer(data, currentPartials, _lambdaTemplates);
             Accept(dataRenderer);
             return dataRenderer.Result;
         }

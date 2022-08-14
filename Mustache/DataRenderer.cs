@@ -39,20 +39,22 @@ namespace Mustache
         private static readonly Regex NewLineRegex = new Regex("\n(?!$)");
         private static readonly Regex FirsNewLineRegex = new Regex("^\r?\n");
 
-        private object _currentContext;
         private readonly Dictionary<string, PartialDefinition> _partialDefinitions;
+        private readonly Dictionary<string, Template> _lambdaTemplates;
         private readonly Stack<object> _parentContexts;
         private readonly StringBuilder _stringBuilder;
+
+        private object _currentContext;
         private string _partialIndent;
 
-
-        internal DataRenderer(object data, Dictionary<string, PartialDefinition> partialDefinitions)
+        internal DataRenderer(object data, Dictionary<string, PartialDefinition> partialDefinitions, Dictionary<string, Template> lambdaTemplates)
         {
             _currentContext = data;
             _partialDefinitions = partialDefinitions;
+            _lambdaTemplates = lambdaTemplates;
             _parentContexts = new Stack<object>();
             _stringBuilder = new StringBuilder();
-            _partialIndent = "";
+            _partialIndent = string.Empty;
         }
 
         internal string Result => _stringBuilder.ToString();
@@ -178,14 +180,22 @@ namespace Mustache
             return null;
         }
 
-        private static (bool keyFound, object value) GetValueFromDatacontext(object dataContext, string key)
+        private (bool keyFound, object value) GetValueFromDatacontext(object dataContext, string key)
         {
             if (dataContext is IDictionary dictionary)
             {
                 if (!dictionary.Contains(key)) return (false, null);
 
                 object value = dictionary[key];
-                return value is Func<string, object> lambda ? (true, lambda(null)) : (true, value);
+                if (!(value is Delegate)) return (true, value);
+
+                if (!(value is Func<string, object> lambda)) return (true, null);
+
+                object lambdaResult = lambda(null);
+                if (!(lambdaResult is string lambdaString)) return (true, lambdaResult);
+
+                RenderLambdaResult(lambdaString);
+                return (true, string.Empty);
             }
 
             Type type = dataContext.GetType();
@@ -200,7 +210,15 @@ namespace Mustache
             if (propertyInfo != null)
             {
                 object value = propertyInfo.GetValue(dataContext);
-                return value is Func<string, object> lambda ? (true, lambda(null)) : (true, value);
+                if (!(value is Delegate)) return (true, value);
+
+                if (!(value is Func<string, object> lambda)) return (true, null);
+
+                object lambdaResult = lambda(null);
+                if (!(lambdaResult is string lambdaString)) return (true, lambdaResult);
+
+                RenderLambdaResult(lambdaString);
+                return (true, string.Empty);
             }
 
             MethodInfo methodInfo = type.GetMethod(key, BindingFlags.Public | BindingFlags.Instance);
@@ -208,7 +226,24 @@ namespace Mustache
 
             ParameterInfo[] parameters = methodInfo.GetParameters();
             if (parameters.Length != 1 || parameters[0].ParameterType != typeof(string)) return (false, null);
-            return methodInfo.ReturnType == typeof(string) ? (true, methodInfo.Invoke(dataContext, new object[] {null})) : (false, null);
+            if (methodInfo.ReturnType == typeof(void)) return (false, null);
+
+            {
+                object lambdaResult = methodInfo.Invoke(dataContext, new object[] {null});
+                if (!(lambdaResult is string lambdaString)) return (true, lambdaResult);
+
+                RenderLambdaResult(lambdaString);
+                return (true, string.Empty);
+            }
+        }
+
+        private void RenderLambdaResult(string template)
+        {
+            if (!_lambdaTemplates.TryGetValue(template, out Template compiledTemplate))
+            {
+                _lambdaTemplates[template] = compiledTemplate = Template.Compile(template);
+            }
+            Render(compiledTemplate);
         }
 
         private IEnumerable<object> GetValuesForSection(string path)

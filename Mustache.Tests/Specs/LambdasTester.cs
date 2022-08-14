@@ -43,5 +43,21 @@ namespace Mustache.Tests.Specs
             string templated = Template.Compile("Hello, {{lambda}}!").Render(data);
             Assert.AreEqual(expected, templated, "A lambda's return value should be interpolated");
         }
+
+        [TestMethod]
+        [TestCategory("SpecsLamndas")]
+        public void InterpolationExpansionTest()
+        {
+            dynamic data = new
+            {
+                planet = "world",
+                lambda = (Func<string, object>)(rawText => "{{planet}}")
+            };
+            const string template = "Hello, {{lambda}}!";
+            const string expected = "Hello, world!";
+
+            string templated = Template.Compile(template).Render(data);
+            Assert.AreEqual(expected, templated, "A lambda's return value should be parsed");
+        }
     }
 }
