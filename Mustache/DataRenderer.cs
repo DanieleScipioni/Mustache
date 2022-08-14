@@ -150,7 +150,7 @@ namespace Mustache
         private object GetValue(ArraySegment<string> keys)
         {
             // ReSharper disable once PossibleNullReferenceException
-            (bool keyFound, object value) = GetValue(_currentContext, keys.Array[keys.Offset]);
+            (bool keyFound, object value) = GetValueFromDatacontext(_currentContext, keys.Array[keys.Offset]);
 
             if (keyFound)
             {
@@ -164,7 +164,7 @@ namespace Mustache
 
             foreach (object context in _parentContexts)
             {
-                (keyFound, value) = GetValue(context, keys.Array[keys.Offset]);
+                (keyFound, value) = GetValueFromDatacontext(context, keys.Array[keys.Offset]);
                 if (!keyFound) continue;
 
                 if (value == null || keys.Count == 1) return value;
@@ -178,7 +178,7 @@ namespace Mustache
             return null;
         }
 
-        private static (bool keyFound, object value) GetValue(object dataContext, string key)
+        private static (bool keyFound, object value) GetValueFromDatacontext(object dataContext, string key)
         {
             if (dataContext is IDictionary dictionary)
             {
