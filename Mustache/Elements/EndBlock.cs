@@ -28,6 +28,8 @@ namespace Mustache.Elements
     {
         public EndBlock(string key) : base(key) {}
 
+        internal int TextPosition;
+
         internal override void Accept(IElementRenderer renderer)
         {
             renderer.Render(this);

@@ -28,6 +28,8 @@ namespace Mustache.Elements
     {
         public Section(string key) : base(key) {}
 
+        internal string RawText;
+
         internal override void Accept(IElementRenderer renderer)
         {
             renderer.Render(this);

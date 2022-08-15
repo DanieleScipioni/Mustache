@@ -61,10 +61,16 @@ namespace Mustache
 
         public void Render(Section section)
         {
-            foreach (object item in GetValuesForSection(section.Key))
+            foreach ((object value, bool lambda) in GetValuesForSection(section.Key, section.RawText))
             {
+                if (lambda && value is string stringValue)
+                {
+                    _stringBuilder.Append(stringValue);
+                    continue;
+                }
+
                 _parentContexts.Push(_currentContext);
-                _currentContext = item;
+                _currentContext = value;
 
                 foreach (Element element in section.Elements())
                 {
@@ -77,7 +83,7 @@ namespace Mustache
 
         public void Render(InvertedSection invertedSection)
         {
-            IEnumerable<object> enumerable = GetValuesForSection(invertedSection.Key);
+            IEnumerable<(object value, bool lambda)> enumerable = GetValuesForSection(invertedSection.Key, invertedSection.RawText);
             if (enumerable.Any()) return;
 
             foreach (Element element in invertedSection.Elements())
@@ -122,7 +128,7 @@ namespace Mustache
 
         public void Render(Variable variable)
         {
-            object value = GetValue(variable.Key);
+            (bool _, object value) = GetValue(variable.Key, null);
             if (value == null) return;
 
             string text = variable.EscapeHtml
@@ -140,62 +146,62 @@ namespace Mustache
             }
         }
 
-        private object GetValue(string path)
+        private (bool lambda, object value) GetValue(string path, string rawText)
         {
-            if (path == ".") return _currentContext;
+            if (path == ".") return (false, _currentContext);
 
             string[] keys = path.Split('.');
 
-            return keys.Length == 0 ? null : GetValue(new ArraySegment<string>(keys));
+            return keys.Length == 0 ? (false, null) : GetValue(new ArraySegment<string>(keys), rawText);
         }
 
-        private object GetValue(ArraySegment<string> keys)
+        private (bool lambda, object value) GetValue(ArraySegment<string> keys, string rawText)
         {
             // ReSharper disable once PossibleNullReferenceException
-            (bool keyFound, object value) = GetValueFromDatacontext(_currentContext, keys.Array[keys.Offset]);
+            (bool keyFound, bool lambda, object value) = GetValueFromDatacontext(_currentContext, keys.Array[keys.Offset], rawText);
 
             if (keyFound)
             {
-                if (value == null || keys.Count == 1) return value;
+                if (value == null || keys.Count == 1) return (lambda, value);
                 _parentContexts.Push(_currentContext);
                 _currentContext = value;
-                value = GetValue(new ArraySegment<string>(keys.Array, keys.Offset + 1, keys.Count - 1));
+                (lambda, value) = GetValue(new ArraySegment<string>(keys.Array, keys.Offset + 1, keys.Count - 1), rawText);
                 _currentContext = _parentContexts.Pop();
-                return value;
+                return (lambda, value);
             }
 
             foreach (object context in _parentContexts)
             {
-                (keyFound, value) = GetValueFromDatacontext(context, keys.Array[keys.Offset]);
+                (keyFound, lambda, value) = GetValueFromDatacontext(context, keys.Array[keys.Offset], rawText);
                 if (!keyFound) continue;
 
-                if (value == null || keys.Count == 1) return value;
+                if (value == null || keys.Count == 1) return (lambda, value);
                 _parentContexts.Push(_currentContext);
                 _currentContext = value;
-                value = GetValue(new ArraySegment<string>(keys.Array, keys.Offset + 1, keys.Count - 1));
+                (lambda, value) = GetValue(new ArraySegment<string>(keys.Array, keys.Offset + 1, keys.Count - 1), rawText);
                 _currentContext = _parentContexts.Pop();
-                return value;
+                return (lambda, value);
             }
 
-            return null;
+            return (false, null);
         }
 
-        private (bool keyFound, object value) GetValueFromDatacontext(object dataContext, string key)
+        private (bool keyFound, bool lambda, object value) GetValueFromDatacontext(object dataContext, string key, string rawText)
         {
             if (dataContext is IDictionary dictionary)
             {
-                if (!dictionary.Contains(key)) return (false, null);
+                if (!dictionary.Contains(key)) return (false, false, null);
 
                 object value = dictionary[key];
-                if (!(value is Delegate)) return (true, value);
+                if (!(value is Delegate)) return (true, false, value);
 
-                if (!(value is Func<string, object> lambda)) return (true, null);
+                if (!(value is Func<string, object> lambda)) return (true, false, null);
 
-                object lambdaResult = lambda(null);
-                if (!(lambdaResult is string lambdaString)) return (true, lambdaResult);
+                object lambdaResult = lambda(rawText);
+                if (!(lambdaResult is string lambdaString)) return (true, true, lambdaResult);
 
                 value = RenderLambdaResult(lambdaString);
-                return (true, value);
+                return (true, true, value);
             }
 
             Type type = dataContext.GetType();
@@ -203,37 +209,37 @@ namespace Mustache
             FieldInfo fieldInfo = type.GetField(key);
             if (fieldInfo != null)
             {
-                return (true, fieldInfo.GetValue(dataContext));
+                return (true, false, fieldInfo.GetValue(dataContext));
             }
 
             PropertyInfo propertyInfo = type.GetProperty(key);
             if (propertyInfo != null)
             {
                 object value = propertyInfo.GetValue(dataContext);
-                if (!(value is Delegate)) return (true, value);
+                if (!(value is Delegate)) return (true, false, value);
 
-                if (!(value is Func<string, object> lambda)) return (true, null);
+                if (!(value is Func<string, object> lambda)) return (true, false, null);
 
-                object lambdaResult = lambda(null);
-                if (!(lambdaResult is string lambdaString)) return (true, lambdaResult);
+                object lambdaResult = lambda(rawText);
+                if (!(lambdaResult is string lambdaString)) return (true, true, lambdaResult);
 
                 value = RenderLambdaResult(lambdaString);
-                return (true, value);
+                return (true, true, value);
             }
 
             MethodInfo methodInfo = type.GetMethod(key, BindingFlags.Public | BindingFlags.Instance);
-            if (methodInfo == null) return (false, null);
+            if (methodInfo == null) return (false, false, null);
 
             ParameterInfo[] parameters = methodInfo.GetParameters();
-            if (parameters.Length != 1 || parameters[0].ParameterType != typeof(string)) return (false, null);
-            if (methodInfo.ReturnType == typeof(void)) return (false, null);
+            if (parameters.Length != 1 || parameters[0].ParameterType != typeof(string)) return (false, false, null);
+            if (methodInfo.ReturnType == typeof(void)) return (false, false, null);
 
             {
-                object lambdaResult = methodInfo.Invoke(dataContext, new object[] {null});
-                if (!(lambdaResult is string lambdaString)) return (true, lambdaResult);
+                object lambdaResult = methodInfo.Invoke(dataContext, new object[] {rawText});
+                if (!(lambdaResult is string lambdaString)) return (true, true, lambdaResult);
 
                 string value = RenderLambdaResult(lambdaString);
-                return (true, value);
+                return (true, true, value);
             }
         }
 
@@ -246,32 +252,32 @@ namespace Mustache
             return compiledTemplate.Render(_currentContext);
         }
 
-        private IEnumerable<object> GetValuesForSection(string path)
+        private IEnumerable<(object value, bool lambda)> GetValuesForSection(string path, string rawText)
         {
-            object value = GetValue(path);
+            (bool lambda, object value) = GetValue(path, rawText);
             if (value == null) yield break;
 
             if (value is bool boolValue)
             {
                 if (boolValue)
                 {
-                    yield return true;
+                    yield return (true, lambda);
                 }
             }
             else if (value is string || value is IDictionary) // string and IDictionary are IEnumerable, so it needs to check string befoer IEnumerable
             {
-                yield return value;
+                yield return (value, lambda);
             }
             else if (value is IEnumerable enumerable)
             {
                 foreach (object item in enumerable)
                 {
-                    yield return item;
+                    yield return (item, lambda);
                 }
             }
             else
             {
-                yield return value;
+                yield return (value, lambda);
             }
         }
     }

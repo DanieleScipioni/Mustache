@@ -31,7 +31,7 @@ namespace Mustache
     {
         public static Template Compile(string template)
         {
-            return Builder.Build(new Parser(template).Parse());
+            return Builder.Build(new Parser(template).Parse(), template);
         }
 
         private readonly Dictionary<string, PartialDefinition> _partialDefinitions = new Dictionary<string, PartialDefinition>();

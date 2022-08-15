@@ -32,6 +32,8 @@ namespace Mustache.Elements
 
         protected Block(string key) : base(key) {}
 
+        internal int TextPosition;
+
         public void Add(Element element)
         {
             if (!(element is PartialDefinition _))

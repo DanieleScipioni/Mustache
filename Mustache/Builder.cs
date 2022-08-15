@@ -31,7 +31,7 @@ namespace Mustache
 {
     internal static class Builder
     {
-        internal static Template Build(IEnumerable<Element> parts)
+        internal static Template Build(IEnumerable<Element> parts, string template)
         {
             if (parts == null) throw new ArgumentNullException(nameof(parts));
 
@@ -62,6 +62,16 @@ namespace Mustache
                     if (endBlock.Key != currentBlock.Key)
                     {
                         throw new MustacheException($"End section tag '{endBlock.Key}' does not match section start tag '{currentBlock.Key}'");
+                    }
+
+                    switch (currentBlock)
+                    {
+                        case Section section:
+                            section.RawText = template.Substring(currentBlock.TextPosition, endBlock.TextPosition - currentBlock.TextPosition);
+                            break;
+                        case InvertedSection invertedSection:
+                            invertedSection.RawText = template.Substring(currentBlock.TextPosition, endBlock.TextPosition - currentBlock.TextPosition);
+                            break;
                     }
                     currentBlock = blocks.Pop();
                 }

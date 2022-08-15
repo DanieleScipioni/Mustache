@@ -109,5 +109,21 @@ namespace Mustache.Tests.Specs
             string templated = Template.Compile(template).Render(data);
             Assert.AreEqual(expected, templated, "Lambda results should be appropriately escaped");
         }
+
+        [TestMethod]
+        [TestCategory("SpecsLamndas")]
+        public void SectionTest()
+        {
+            dynamic data = new 
+            {
+                lambda = (Func<string, object>)(rawText => rawText == "{{x}}" ? "yes" : "no")
+            };
+
+            const string template = "<{{#lambda}}{{x}}{{/lambda}}>";
+            const string expected = "<yes>";
+
+            string templated = Template.Compile(template).Render(data);
+            Assert.AreEqual(expected, templated, "Lambdas used for sections should receive the raw section string");
+        }
     }
 }

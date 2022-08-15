@@ -86,11 +86,13 @@ namespace Mustache
                     Group openDelimiterGroup = openMatch.Groups[3];
                     bool emptyStringBeforeTag = openDelimiterGroup.Index == currentPos;
 
+                    int openMatchIndex = openMatch.Index;
+
                     StringBuilder plainTextBeforeTag =
-                        new StringBuilder(_template.Substring(currentPos, openMatch.Index - currentPos))
+                        new StringBuilder(_template.Substring(currentPos, openMatchIndex - currentPos))
                         .Append(newLineBeforeTagGroup);
 
-                    currentPos = openMatch.Index + openMatch.Length;
+                    currentPos = openMatchIndex + openMatch.Length;
 
                     Match closeMatch = _closeDelimiterRegex.Match(_template, currentPos);
                     Group closeDelimiterGroup = closeMatch.Groups[1];
@@ -111,6 +113,16 @@ namespace Mustache
                     currentPos = isStandalone || previousTagWasClosePartialDefinition
                         ? closeMatch.Index + closeMatch.Length
                         : closeDelimiterGroup.Index + closeDelimiterGroup.Length;
+
+                    switch (tag)
+                    {
+                        case Block block:
+                            block.TextPosition = currentPos;
+                            break;
+                        case EndBlock endBlock:
+                            endBlock.TextPosition = openMatchIndex;
+                            break;
+                    }
 
                     if (plainTextBeforeTag.Length != 0) yield return new TextElement(plainTextBeforeTag.ToString());
 
