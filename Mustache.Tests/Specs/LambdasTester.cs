@@ -125,5 +125,22 @@ namespace Mustache.Tests.Specs
             string templated = Template.Compile(template).Render(data);
             Assert.AreEqual(expected, templated, "Lambdas used for sections should receive the raw section string");
         }
+
+        [TestMethod]
+        [TestCategory("SpecsLamndas")]
+        public void SectionExpansionTest()
+        {
+            dynamic data = new 
+            {
+                planet = "Earth",
+                lambda = (Func<string, object>)(rawText => $"{rawText}{{{{planet}}}}{rawText}")
+            };
+
+            const string template = "<{{#lambda}}-{{/lambda}}>";
+            const string expected = "<-Earth->";
+
+            string templated = Template.Compile(template).Render(data);
+            Assert.AreEqual(expected, templated, "Lambdas used for sections should have their results parsed");
+        }
     }
 }
