@@ -22,10 +22,10 @@
 // SOFTWARE.
 // ******************************************************************************
 
+using Mustache.Elements;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Mustache.Elements;
 
 namespace Mustache
 {
@@ -35,18 +35,22 @@ namespace Mustache
         {
             if (parts == null) throw new ArgumentNullException(nameof(parts));
 
-            var template = new Template();
+            Template compiledTemplate = null;
             var blocks = new Stack<Block>();
 
-            var currentBlock = (Block) template;
+            Block currentBlock = null;
 
             foreach (Element element in parts)
             {
-                if (!(element is EndBlock endBlock))
+                if (element is Template templateElement)
+                {
+                    currentBlock = compiledTemplate = templateElement;
+                }
+                else if (!(element is EndBlock endBlock))
                 {
                     if (element is PartialDefinition partialDefinition)
                     {
-                        template.Add(partialDefinition);
+                        compiledTemplate.Add(partialDefinition);
                     }
                     currentBlock.Add(element);
                     if (!(element is Block block)) continue;
@@ -57,7 +61,7 @@ namespace Mustache
                 {
                     if (endBlock.Key != currentBlock.Key)
                     {
-                        throw new MustacheException($"End section tag {endBlock.Key} does not match section start tag");
+                        throw new MustacheException($"End section tag '{endBlock.Key}' does not match section start tag '{currentBlock.Key}'");
                     }
                     currentBlock = blocks.Pop();
                 }
@@ -69,7 +73,7 @@ namespace Mustache
                     $"Sections '{string.Join(", ", blocks.Select(s => s.Key))}' are without end section");
             }
 
-            return template;
+            return compiledTemplate;
         }
     }
 }

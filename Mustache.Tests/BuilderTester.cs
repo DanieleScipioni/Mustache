@@ -22,9 +22,7 @@
 // SOFTWARE.
 // ******************************************************************************
 
-using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Mustache.Elements;
 
 namespace Mustache.Tests
 {
@@ -33,52 +31,32 @@ namespace Mustache.Tests
     {
         [TestMethod]
         [TestCategory(nameof(Builder))]
-        public void ExceptionWithNulls()
-        {
-            Assert.ThrowsException<ArgumentNullException>(() => Builder.Build(null));
-        }
-
-        [TestMethod]
-        [TestCategory(nameof(Builder))]
         public void ExceptionWhenStartSectionDoesNotHaveEndSection()
         {
-            Assert.ThrowsException<MustacheException>(
-                () => Builder.Build(new Element[]
-                {
-                    new TextElement("some text"),
-                    new Section("section"),
-                    new TextElement("some more text"),
-                    new EndBlock("endsection"),
-                    new TextElement("thats all folks")
-                }));
+            Assert.ThrowsException<MustacheException>(() =>
+            {
+                Template.Compile("some text{{#section}}some more text{{/endsection}}thats all folks");
+            });
         }
 
         [TestMethod]
         [TestCategory(nameof(Builder))]
         public void ExceptionWithStartSectionAndWithoutEndSection()
         {
-            Assert.ThrowsException<MustacheException>(
-                () => Builder.Build(new Element[]
-                {
-                    new TextElement("some text"),
-                    new Section("section"),
-                    new TextElement("some more text"),
-                    new TextElement("thats all folks")
-                }));
+            Assert.ThrowsException<MustacheException>(() =>
+            {
+                Template.Compile("some text{{#section}}some more textthats all folks");
+            });
         }
 
         [TestMethod]
         [TestCategory(nameof(Builder))]
         public void ExceptionWithoutStartSectionAndWithEndSection()
         {
-            Assert.ThrowsException<MustacheException>(
-                () => Builder.Build(
-                    new Element[]
-                    {
-                        new TextElement("some text"),
-                        new EndBlock("section"),
-                        new TextElement("some other text")
-                    }));
+            Assert.ThrowsException<MustacheException>(() =>
+            {
+                Template.Compile("some text{{/section}}some more text");
+            });
         }
     }
 }

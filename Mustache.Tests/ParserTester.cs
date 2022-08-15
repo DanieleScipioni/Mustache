@@ -56,16 +56,18 @@ namespace Mustache.Tests
         {
             IEnumerable<Element> enumerable = new Parser("{{ a a}}aaaaa").Parse();
             List<Element> elements = enumerable.ToList();
-            Assert.AreEqual(2, elements.Count);
+            Assert.AreEqual(3, elements.Count);
 
-            Assert.IsInstanceOfType(elements[0], typeof(Variable));
+            Assert.IsInstanceOfType(elements[0], typeof(Template));
 
-            var variable = (Variable)elements[0];
+            Assert.IsInstanceOfType(elements[1], typeof(Variable));
+
+            var variable = (Variable)elements[1];
             Assert.AreEqual("a a", variable.Key);
 
-            Assert.IsInstanceOfType(elements[1], typeof(TextElement));
+            Assert.IsInstanceOfType(elements[2], typeof(TextElement));
 
-            var plainText = (TextElement)elements[1];
+            var plainText = (TextElement)elements[2];
             Assert.AreEqual("aaaaa", plainText.Text);
         }
 
@@ -75,16 +77,18 @@ namespace Mustache.Tests
         {
             IEnumerable<Element> enumerable = new Parser("aaaaa{{ a a}}").Parse();
             List<Element> elements = enumerable.ToList();
-            Assert.AreEqual(2, elements.Count);
+            Assert.AreEqual(3, elements.Count);
 
-            Assert.IsInstanceOfType(elements[0], typeof(TextElement));
+            Assert.IsInstanceOfType(elements[0], typeof(Template));
 
-            var plainText = (TextElement)elements[0];
+            Assert.IsInstanceOfType(elements[1], typeof(TextElement));
+
+            var plainText = (TextElement)elements[1];
             Assert.AreEqual("aaaaa", plainText.Text);
 
-            Assert.IsInstanceOfType(elements[1], typeof(Variable));
+            Assert.IsInstanceOfType(elements[2], typeof(Variable));
 
-            var variable = (Variable)elements[1];
+            var variable = (Variable)elements[2];
             Assert.AreEqual("a a", variable.Key);
         }
     }

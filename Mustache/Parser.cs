@@ -69,6 +69,13 @@ namespace Mustache
             var currentPos = 0;
             var previousTagWasClosePartialDefinition = false;
 
+            if (_blocks.Count == 0)
+            {
+                var template = new Template();
+                _blocks.Push(template);
+                yield return template;
+            }
+
             while (currentPos < _template.Length)
             {
                 Match openMatch = _openDelimiterRegex.Match(_template, currentPos);
@@ -97,10 +104,7 @@ namespace Mustache
 
                     isStandalone = isStandalone && !(tag is Variable);
 
-                    if (!isStandalone)
-                    {
-                        plainTextBeforeTag.Append(whiteSpacesBeforeTagGroup);
-                    }
+                    if (!isStandalone) plainTextBeforeTag.Append(whiteSpacesBeforeTagGroup);
 
                     previousTagWasClosePartialDefinition = HandleClosePartialDefinition(tag);
 
