@@ -151,15 +151,15 @@ namespace Mustache
                 case '!': // comment
                     return null;
                 case '#':
-                    return new Section(tagKey.Substring(1).Trim());
+                    return new Section(tagKey.Substring(1));
                 case '^':
-                    return new InvertedSection(tagKey.Substring(1).Trim());
+                    return new InvertedSection(tagKey.Substring(1));
                 case '<':
-                    return new PartialDefinition(tagKey.Substring(1).Trim());
+                    return new PartialDefinition(tagKey.Substring(1));
                 case '>':
-                    return new Partial(tagKey.Substring(1).Trim(), isStandalone ? indentSpaces : "");
+                    return new Partial(tagKey.Substring(1), isStandalone ? indentSpaces : string.Empty);
                 case '/':
-                    return new EndBlock(tagKey.Substring(1).Trim());
+                    return new EndBlock(tagKey.Substring(1));
                 case '=': // set delimiter
                     Match match = ChangeDelimitersRegex.Match(tagKey);
                     Group newOpenDelimiter = match.Groups[1];
@@ -183,7 +183,7 @@ namespace Mustache
                             tagKey = tagKey.Substring(1, tagKey.Length - 2);
                         }
                     }
-                    return new Variable(tagKey.Trim(), !doNotEscapeHtml);
+                    return new Variable(tagKey, !doNotEscapeHtml);
             }
         }
     }

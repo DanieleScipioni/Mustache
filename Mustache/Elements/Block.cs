@@ -30,7 +30,7 @@ namespace Mustache.Elements
     {
         private readonly List<Element> _elements = new List<Element>();
 
-        protected Block(string key) : base(key) { }
+        protected Block(string key) : base(key) {}
 
         public void Add(Element element)
         {

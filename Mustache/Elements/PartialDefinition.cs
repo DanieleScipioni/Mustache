@@ -26,9 +26,7 @@ namespace Mustache.Elements
 {
     public class PartialDefinition : Block
     {
-        public PartialDefinition(string key) : base(key)
-        {
-        }
+        public PartialDefinition(string key) : base(key) {}
 
         public override string ToString()
         {

@@ -26,7 +26,7 @@ namespace Mustache.Elements
 {
     public class InvertedSection : Block
     {
-        public InvertedSection(string key) : base(key) { }
+        public InvertedSection(string key) : base(key) {}
 
         internal override void Accept(IElementRenderer renderer)
         {

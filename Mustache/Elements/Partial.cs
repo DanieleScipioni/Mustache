@@ -30,7 +30,7 @@ namespace Mustache.Elements
     
         public Partial(string key, string indent) : base(key)
         {
-            Indent = indent ?? "";
+            Indent = indent ?? string.Empty;
         }
 
         internal override void Accept(IElementRenderer renderer)
