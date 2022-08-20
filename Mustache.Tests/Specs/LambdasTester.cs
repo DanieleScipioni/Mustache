@@ -175,5 +175,21 @@ namespace Mustache.Tests.Specs
             string templated = Template.Compile(template).Render(data);
             Assert.AreEqual(expected, templated, "Lambdas used for sections should not be cached");
         }
+
+        [TestMethod]
+        [TestCategory("SpecsLamndas")]
+        public void InvertedSectionTest()
+        {
+            dynamic data = new 
+            {
+                lambda = (Func<string, object>)(rawText => false)
+            };
+
+            const string template = "<{{^lambda}}{{static}}{{/lambda}}>";
+            const string expected = "<>";
+
+            string templated = Template.Compile(template).Render(data);
+            Assert.AreEqual(expected, templated, "Lambdas used for inverted sections should be considered truthy");
+        }
     }
 }
