@@ -19,13 +19,11 @@
     <Copyright>Copyright © 2018 Daniele Scipioni</Copyright>
     <PackageId>Mustache.NETStandard</PackageId>
     <NeutralLanguage></NeutralLanguage>
-    <PackageReleaseNotes>Version 1.0.1
-- updated test cases to match Mustache specifications version 1.2.2
-- fixed bug resolving parent context</PackageReleaseNotes>
+    <PackageReleaseNotes>Added lambda implementation</PackageReleaseNotes>
     <Authors>Daniele Scipioni</Authors>
-    <AssemblyVersion>1.0.1.0</AssemblyVersion>
-    <FileVersion>1.0.1.0</FileVersion>
-    <Version>1.0.1</Version>
+    <AssemblyVersion>1.1.0.0</AssemblyVersion>
+    <FileVersion>1.1.0.0</FileVersion>
+    <Version>1.1.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
