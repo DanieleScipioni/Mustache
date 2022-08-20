@@ -159,5 +159,21 @@ namespace Mustache.Tests.Specs
             string templated = Template.Compile(template).Render(data);
             Assert.AreEqual(expected, templated, "Lambdas used for sections should parse with the current delimiters");
         }
+
+        [TestMethod]
+        [TestCategory("SpecsLamndas")]
+        public void SectionMultipleCallsTest()
+        {
+            dynamic data = new 
+            {
+                lambda = (Func<string, object>)(rawText => $"__{rawText}__")
+            };
+
+            const string template = "{{#lambda}}FILE{{/lambda}} != {{#lambda}}LINE{{/lambda}}";
+            const string expected = "__FILE__ != __LINE__";
+
+            string templated = Template.Compile(template).Render(data);
+            Assert.AreEqual(expected, templated, "Lambdas used for sections should not be cached");
+        }
     }
 }
