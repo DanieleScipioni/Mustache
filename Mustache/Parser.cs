@@ -31,8 +31,8 @@ namespace Mustache
 {
     internal class Parser
     {
-        private const string MustacheOpenDelimiter = "{{";
-        private const string MustacheCloseDelimiter = "}}";
+        public const string MustacheOpenDelimiter = "{{";
+        public const string MustacheCloseDelimiter = "}}";
 
         public static readonly Regex DoNotEscapeHtmlWithMustache = new Regex(@"^\{.*?\}$");
         public static readonly Regex DoNotEscapeHtmlWithAmpersand = new Regex(@"^\&");
@@ -47,10 +47,12 @@ namespace Mustache
         private readonly Stack<Block> _blocks = new Stack<Block>();
         private readonly string _template;
 
-        public Parser(string template)
+        public Parser(string template) : this(template, MustacheOpenDelimiter, MustacheCloseDelimiter) {}
+
+        public Parser(string template, string openDelimiter, string closeDelimiter)
         {
             _template = template;
-            SetDelimiters(MustacheOpenDelimiter, MustacheCloseDelimiter);
+            SetDelimiters(openDelimiter, closeDelimiter);
         }
 
         private void SetDelimiters(string openDelimiter, string closeDelimiter)
@@ -178,8 +180,12 @@ namespace Mustache
                     Group newCloseDelimiter = match.Groups[2];
                     if (newOpenDelimiter.Success && newCloseDelimiter.Success)
                     {
-                        SetDelimiters(newOpenDelimiter.Value, newCloseDelimiter.Value);
+                        string openDelimiter = newOpenDelimiter.Value;
+                        string closeDelimiter = newCloseDelimiter.Value;
+                        SetDelimiters(openDelimiter, closeDelimiter);
+                        return new Delimiters(tagKey.Substring(1), openDelimiter, closeDelimiter);
                     }
+
                     return null;
                 default:
                     bool doNotEscapeHtml = DoNotEscapeHtmlWithAmpersand.Match(tagKey).Success;

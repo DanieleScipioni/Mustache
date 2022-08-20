@@ -36,12 +36,7 @@ namespace Mustache
 
         private readonly Dictionary<string, PartialDefinition> _partialDefinitions = new Dictionary<string, PartialDefinition>();
 
-        private readonly Dictionary<string, Template> _lambdaTemplates;
-
-        internal Template() : base(string.Empty)
-        {
-            _lambdaTemplates = new Dictionary<string, Template>();
-        }
+        internal Template() : base(string.Empty) { }
 
         internal void Add(PartialDefinition partialDefinition)
         {
@@ -59,7 +54,7 @@ namespace Mustache
                 }
             }
 
-            var dataRenderer = new DataRenderer(data, currentPartials, _lambdaTemplates);
+            var dataRenderer = new DataRenderer(data, currentPartials);
             Accept(dataRenderer);
             return dataRenderer.Result;
         }

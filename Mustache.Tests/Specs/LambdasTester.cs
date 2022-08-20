@@ -142,5 +142,22 @@ namespace Mustache.Tests.Specs
             string templated = Template.Compile(template).Render(data);
             Assert.AreEqual(expected, templated, "Lambdas used for sections should have their results parsed");
         }
+
+        [TestMethod]
+        [TestCategory("SpecsLamndas")]
+        public void SectionAlternateDelimitersTest()
+        {
+            dynamic data = new 
+            {
+                planet = "Earth",
+                lambda = (Func<string, object>)(rawText => $"{rawText}{{{{planet}}}} => |planet|{rawText}")
+            };
+
+            const string template = "{{= | | =}}<|#lambda|-|/lambda|>";
+            const string expected = "<-{{planet}} => Earth->";
+
+            string templated = Template.Compile(template).Render(data);
+            Assert.AreEqual(expected, templated, "Lambdas used for sections should parse with the current delimiters");
+        }
     }
 }

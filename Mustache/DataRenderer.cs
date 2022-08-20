@@ -40,21 +40,24 @@ namespace Mustache
         private static readonly Regex FirsNewLineRegex = new Regex("^\r?\n");
 
         private readonly Dictionary<string, PartialDefinition> _partialDefinitions;
-        private readonly Dictionary<string, Template> _lambdaTemplates;
         private readonly Stack<object> _parentContexts;
         private readonly StringBuilder _stringBuilder;
 
         private object _currentContext;
         private string _partialIndent;
 
-        internal DataRenderer(object data, Dictionary<string, PartialDefinition> partialDefinitions, Dictionary<string, Template> lambdaTemplates)
+        private string _openDelimiter;
+        private string _closeDelimiter;
+
+        internal DataRenderer(object data, Dictionary<string, PartialDefinition> partialDefinitions)
         {
             _currentContext = data;
             _partialDefinitions = partialDefinitions;
-            _lambdaTemplates = lambdaTemplates;
             _parentContexts = new Stack<object>();
             _stringBuilder = new StringBuilder();
             _partialIndent = string.Empty;
+            _openDelimiter = Parser.MustacheOpenDelimiter;
+            _closeDelimiter = Parser.MustacheCloseDelimiter;
         }
 
         internal string Result => _stringBuilder.ToString();
@@ -128,7 +131,7 @@ namespace Mustache
 
         public void Render(Variable variable)
         {
-            (bool _, object value) = GetValue(variable.Key, null);
+            (bool _, object value) = GetValue(variable.Key, RenderType.Variable, null);
             if (value == null) return;
 
             string text = variable.EscapeHtml
@@ -146,39 +149,45 @@ namespace Mustache
             }
         }
 
-        private (bool lambda, object value) GetValue(string path, string rawText)
+        public void Render(Delimiters delimiters)
+        {
+            _openDelimiter = delimiters.OpenDelimiter;
+            _closeDelimiter = delimiters.CloseDelimiter;
+        }
+
+        private (bool lambda, object value) GetValue(string path, RenderType renderType, string rawText)
         {
             if (path == ".") return (false, _currentContext);
 
             string[] keys = path.Split('.');
 
-            return keys.Length == 0 ? (false, null) : GetValue(new ArraySegment<string>(keys), rawText);
+            return keys.Length == 0 ? (false, null) : GetValue(new ArraySegment<string>(keys), renderType, rawText);
         }
 
-        private (bool lambda, object value) GetValue(ArraySegment<string> keys, string rawText)
+        private (bool lambda, object value) GetValue(ArraySegment<string> keys, RenderType renderType, string rawText)
         {
             // ReSharper disable once PossibleNullReferenceException
-            (bool keyFound, bool lambda, object value) = GetValueFromDatacontext(_currentContext, keys.Array[keys.Offset], rawText);
+            (bool keyFound, bool lambda, object value) = GetValueFromDatacontext(_currentContext, keys.Array[keys.Offset], renderType, rawText);
 
             if (keyFound)
             {
                 if (value == null || keys.Count == 1) return (lambda, value);
                 _parentContexts.Push(_currentContext);
                 _currentContext = value;
-                (lambda, value) = GetValue(new ArraySegment<string>(keys.Array, keys.Offset + 1, keys.Count - 1), rawText);
+                (lambda, value) = GetValue(new ArraySegment<string>(keys.Array, keys.Offset + 1, keys.Count - 1), renderType, rawText);
                 _currentContext = _parentContexts.Pop();
                 return (lambda, value);
             }
 
             foreach (object context in _parentContexts)
             {
-                (keyFound, lambda, value) = GetValueFromDatacontext(context, keys.Array[keys.Offset], rawText);
+                (keyFound, lambda, value) = GetValueFromDatacontext(context, keys.Array[keys.Offset], renderType, rawText);
                 if (!keyFound) continue;
 
                 if (value == null || keys.Count == 1) return (lambda, value);
                 _parentContexts.Push(_currentContext);
                 _currentContext = value;
-                (lambda, value) = GetValue(new ArraySegment<string>(keys.Array, keys.Offset + 1, keys.Count - 1), rawText);
+                (lambda, value) = GetValue(new ArraySegment<string>(keys.Array, keys.Offset + 1, keys.Count - 1), renderType, rawText);
                 _currentContext = _parentContexts.Pop();
                 return (lambda, value);
             }
@@ -186,7 +195,7 @@ namespace Mustache
             return (false, null);
         }
 
-        private (bool keyFound, bool lambda, object value) GetValueFromDatacontext(object dataContext, string key, string rawText)
+        private (bool keyFound, bool lambda, object value) GetValueFromDatacontext(object dataContext, string key, RenderType renderType, string rawText)
         {
             if (dataContext is IDictionary dictionary)
             {
@@ -200,7 +209,7 @@ namespace Mustache
                 object lambdaResult = lambda(rawText);
                 if (!(lambdaResult is string lambdaString)) return (true, true, lambdaResult);
 
-                value = RenderLambdaResult(lambdaString);
+                value = RenderLambdaResult(lambdaString, renderType);
                 return (true, true, value);
             }
 
@@ -223,7 +232,7 @@ namespace Mustache
                 object lambdaResult = lambda(rawText);
                 if (!(lambdaResult is string lambdaString)) return (true, true, lambdaResult);
 
-                value = RenderLambdaResult(lambdaString);
+                value = RenderLambdaResult(lambdaString, renderType);
                 return (true, true, value);
             }
 
@@ -238,23 +247,31 @@ namespace Mustache
                 object lambdaResult = methodInfo.Invoke(dataContext, new object[] {rawText});
                 if (!(lambdaResult is string lambdaString)) return (true, true, lambdaResult);
 
-                string value = RenderLambdaResult(lambdaString);
+                string value = RenderLambdaResult(lambdaString, renderType);
                 return (true, true, value);
             }
         }
 
-        private string RenderLambdaResult(string template)
+        private string RenderLambdaResult(string template, RenderType renderType)
         {
-            if (!_lambdaTemplates.TryGetValue(template, out Template compiledTemplate))
+            Template compiledTemplate;
+            switch (renderType)
             {
-                _lambdaTemplates[template] = compiledTemplate = Template.Compile(template);
+                case RenderType.Variable:
+                    compiledTemplate = Builder.Build(new Parser(template, Parser.MustacheOpenDelimiter, Parser.MustacheCloseDelimiter).Parse(), template);
+                    break;
+                case RenderType.Section:
+                    compiledTemplate = Builder.Build(new Parser(template, _openDelimiter, _closeDelimiter).Parse(), template);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(renderType), renderType, null);
             }
             return compiledTemplate.Render(_currentContext);
         }
 
         private IEnumerable<(object value, bool lambda)> GetValuesForSection(string path, string rawText)
         {
-            (bool lambda, object value) = GetValue(path, rawText);
+            (bool lambda, object value) = GetValue(path, RenderType.Section, rawText);
             if (value == null) yield break;
 
             if (value is bool boolValue)

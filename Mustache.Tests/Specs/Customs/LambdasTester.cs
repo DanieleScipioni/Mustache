@@ -122,6 +122,25 @@ namespace Mustache.Tests.Specs.Customs
             templated = compiledTemplate.Render(dynamicObject);
             Assert.AreEqual(expected, templated, "dynamicObject");
         }
+
+        [TestMethod]
+        [TestCategory("SpecsLamndas")]
+        public void SectionAlternateDelimitersTest()
+        {
+            dynamic data = new 
+            {
+                planet = "Earth",
+                lambda = (Func<string, object>)(rawText => $"{rawText}{{{{planet}}}} = |planet|{rawText}")
+            };
+
+            const string template = @"{{= | | =}}<|#lambda|-|/lambda|>
+|= {{ }} =|<{{#lambda}}-{{/lambda}}>";
+            const string expected = @"<-{{planet}} = Earth->
+<-Earth = |planet|->";
+
+            string templated = Template.Compile(template).Render(data);
+            Assert.AreEqual(expected, templated, "Lambdas used for sections should parse with the current delimiters");
+        }
     }
 
     internal class InterpolationTestLambdaObject

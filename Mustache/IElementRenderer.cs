@@ -43,5 +43,7 @@ namespace Mustache
         void Render(Variable variable);
 
         void Render(Template template);
+
+        void Render(Delimiters delimiters);
     }
 }
