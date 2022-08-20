@@ -21,60 +21,62 @@ Mustache.PCL is availabe using NuGet at [https://www.nuget.org/packages/Mustache
 
 # How to use the library
 Here is a code sample to explain how to use this library
-    
-    {% raw %}
-    const string templateString = @"Hello {{Name}}
-    You have just won {{Value}} {{Currency}}!
-    {{#InCa}}
-    Well, {{TaxedValue}} {{Currency}}, after taxes.
-    {{/InCa}}";{% endraw %}
-    
-    var data = new
-    {
-        Name = "Chris",
-        Value = 10000,
-        TaxedValue = 6000,
-        Currency = "dollars",
-        InCa = true
-    };
+```csharp
+const string templateString = {% raw %}@"Hello {{Name}}
+You have just won {{Value}} {{Currency}}!
+{{#InCa}}
+Well, {{TaxedValue}} {{Currency}}, after taxes.
+{{/InCa}}";{% endraw %}
 
-    string result = Template.Compile(templateString).Render(data);
+var data = new
+{
+    Name = "Chris",
+    Value = 10000,
+    TaxedValue = 6000,
+    Currency = "dollars",
+    InCa = true
+};
+
+string result = Template.Compile(templateString).Render(data);
+```
 
 The value of result is
-    
-    Hello Chris
-    You have just won 10000 dollars!
-    Well, 6000 dollars, after taxes.
-    
+```
+Hello Chris
+You have just won 10000 dollars!
+Well, 6000 dollars, after taxes.
+```
+
 It is possible to use Dictionaries too:
+```csharp
+var data = new Dictionary<string, object>
+{
+    {"Name", "Chris"},
+    {"Value", "10000"},
+    {"TaxedValue", 6000},
+    {"Currency", "dollars"},
+    {"InCa", true}
+};
+```
 
-    var data = new Dictionary<string, object>
-    {
-        {"Name", "Chris"},
-        {"Value", "10000"},
-        {"TaxedValue", 6000},
-        {"Currency", "dollars"},
-        {"InCa", true}
-    };
-    
 If you need partials use method Template.Render(object, Dictionary<string, string>), example:
+```csharp
+var data = new
+{
+    Name = "Chris",
+    Value = 10000,
+    TaxedValue = 6000,
+    Currency = "dollars",
+    InCa = true
+};
 
-    var data = new
-    {
-        Name = "Chris",
-        Value = 10000,
-        TaxedValue = 6000,
-        Currency = "dollars",
-        InCa = true
-    };
+{% raw %}var partials = new Dictionary<string, string> { { "partial", "Well, {{TaxedValue}} {{Currency}}, after taxes.\r\n" } };{% endraw %}
 
-    {% raw %}var partials = new Dictionary<string, string> { { "partial", "Well, {{TaxedValue}} {{Currency}}, after taxes.\r\n" } };
+const string templateString = {% raw %}@"Hello {{Name}}
+You have just won {{Value}} {{Currency}}!
+{{#InCa}}
+{{>partial}}
+{{/InCa}}";{% endraw %}
 
-    const string templateString = @"Hello {{Name}}
-    You have just won {{Value}} {{Currency}}!
-    {{#InCa}}
-    {{>partial}}
-    {{/InCa}}
-    ";{% endraw %}
-
-     string result = Template.Compile(templateString).Render(data, partials);
+string result = Template.Compile(templateString).Render(data, partials);
+```
