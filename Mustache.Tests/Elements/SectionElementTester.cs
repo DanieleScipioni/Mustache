@@ -35,7 +35,7 @@ namespace Mustache.Tests.Elements
         [TestCategory("SectionElement")]
         public void SectionNullKey()
         {
-            Assert.ThrowsException<ArgumentNullException>(() => new Section(null));
+            Assert.Throws<ArgumentNullException>(() => new Section(null));
         }
 
         [TestMethod]

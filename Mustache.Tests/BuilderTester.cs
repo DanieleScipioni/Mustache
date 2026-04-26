@@ -33,7 +33,7 @@ namespace Mustache.Tests
         [TestCategory(nameof(Builder))]
         public void ExceptionWhenStartSectionDoesNotHaveEndSection()
         {
-            Assert.ThrowsException<MustacheException>(() =>
+            Assert.Throws<MustacheException>(() =>
             {
                 Template.Compile("some text{{#section}}some more text{{/endsection}}thats all folks");
             });
@@ -43,7 +43,7 @@ namespace Mustache.Tests
         [TestCategory(nameof(Builder))]
         public void ExceptionWithStartSectionAndWithoutEndSection()
         {
-            Assert.ThrowsException<MustacheException>(() =>
+            Assert.Throws<MustacheException>(() =>
             {
                 Template.Compile("some text{{#section}}some more textthats all folks");
             });
@@ -53,7 +53,7 @@ namespace Mustache.Tests
         [TestCategory(nameof(Builder))]
         public void ExceptionWithoutStartSectionAndWithEndSection()
         {
-            Assert.ThrowsException<MustacheException>(() =>
+            Assert.Throws<MustacheException>(() =>
             {
                 Template.Compile("some text{{/section}}some more text");
             });

@@ -35,7 +35,7 @@ namespace Mustache.Tests.Elements
         [TestCategory("VariableElement")]
         public void VariableNullKey()
         {
-            Assert.ThrowsException<ArgumentNullException>(() => new Variable(null));
+            Assert.Throws<ArgumentNullException>(() => new Variable(null));
         }
 
         [TestMethod]

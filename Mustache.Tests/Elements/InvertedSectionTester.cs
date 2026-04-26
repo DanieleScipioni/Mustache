@@ -35,7 +35,7 @@ namespace Mustache.Tests.Elements
         [TestCategory("InvertedSectionElement")]
         public void InvertedSectionNullKey()
         {
-            Assert.ThrowsException<ArgumentNullException>(() => new InvertedSection(null));
+            Assert.Throws<ArgumentNullException>(() => new InvertedSection(null));
         }
 
         [TestMethod]

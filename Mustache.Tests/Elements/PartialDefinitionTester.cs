@@ -35,7 +35,7 @@ namespace Mustache.Tests.Elements
         [TestCategory("PartialDefinitionElement")]
         public void PartialDefinitionNullKey()
         {
-            Assert.ThrowsException<ArgumentNullException>(() => new PartialDefinition(null));
+            Assert.Throws<ArgumentNullException>(() => new PartialDefinition(null));
         }
 
         [TestMethod]

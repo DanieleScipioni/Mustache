@@ -35,7 +35,7 @@ namespace Mustache.Tests.Elements
         [TestCategory("PartialElement")]
         public void PartialNullKey()
         {
-            Assert.ThrowsException<ArgumentNullException>(() => new Partial(null, null));
+            Assert.Throws<ArgumentNullException>(() => new Partial(null, null));
         }
 
         [TestMethod]
