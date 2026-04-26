@@ -23,6 +23,7 @@
 // ******************************************************************************
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Collections.Generic;
 
 namespace Mustache.Tests.Specs
 {
@@ -44,10 +45,20 @@ namespace Mustache.Tests.Specs
         [TestCategory("SpecsInterpolation")]
         public void BasicInterpolation()
         {
-            const string template = @"Hello, {{subject}}!";
+            const string template = "Hello, {{subject}}!";
 
-            string templated = Template.Compile(template).Render(new { subject = "world"});
+            string templated = Template.Compile(template).Render(new { subject = "world" });
             Assert.AreEqual("Hello, world!", templated, "Unadorned tags should interpolate content into the template");
+        }
+
+        [TestMethod]
+        [TestCategory("SpecsInterpolation")]
+        public void NoReInterpolation()
+        {
+            const string template = "{{template}}: {{planet}}";
+
+            string templated = Template.Compile(template).Render(new { template = "{{planet}}", planet = "Earth" });
+            Assert.AreEqual("{{planet}}: Earth", templated, "Interpolated tag output should not be re-interpolated");
         }
 
         [TestMethod]
@@ -288,6 +299,35 @@ namespace Mustache.Tests.Specs
             };
             string templated = Template.Compile(template).Render(data);
             Assert.AreEqual(expected, templated, "Dotted names should be resolved against former resolutions");
+        }
+
+        [TestMethod]
+        [TestCategory("SpecsInterpolation")]
+        public void DottedNamesAreNeverSingleKeys()
+        {
+            const string template = "{{a.b}}";
+            const string expected = "";
+            var data = new Dictionary<string, object>
+            {
+                { "a.b", "c" }
+            };
+            string templated = Template.Compile(template).Render(data);
+            Assert.AreEqual(expected, templated, "Dotted names shall not be parsed as single, atomic keys");
+        }
+
+        [TestMethod]
+        [TestCategory("SpecsInterpolation")]
+        public void DottedNamesNoMasking()
+        {
+            const string template = "{{a.b}}";
+            const string expected = "d";
+            var data = new Dictionary<string, object>
+            {
+                { "a.b", "c" },
+                { "a", new Dictionary<string, object> { { "b", "d" } } }
+            };
+            string templated = Template.Compile(template).Render(data);
+            Assert.AreEqual(expected, templated, "Dotted Names in a given context are not available due to dot splitting");
         }
 
         [TestMethod]

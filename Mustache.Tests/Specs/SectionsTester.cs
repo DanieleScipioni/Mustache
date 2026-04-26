@@ -384,6 +384,58 @@ namespace Mustache.Tests.Specs
 
         [TestMethod]
         [TestCategory("SpecsSections")]
+        public void ImplicitIteratorHtmlEscaping()
+        {
+            var data = new { list = new List<object> {  "&", "\"", "<", ">" } };
+
+            const string template = "\"{{#list}}({{.}}){{/list}}\"";
+            const string expected = "\"(&amp;)(&quot;)(&lt;)(&gt;)\"";
+
+            string templated = Template.Compile(template).Render(data);
+            Assert.AreEqual(expected, templated, "Implicit iterators with basic interpolation should be HTML escaped");
+        }
+
+        [TestMethod]
+        [TestCategory("SpecsSections")]
+        public void ImplicitIteratorTripleMustache()
+        {
+            var data = new { list = new List<object> { "&", "\"", "<", ">" } };
+
+            const string template = "\"{{#list}}({{{.}}}){{/list}}\"";
+            const string expected = "\"(&)(\")(<)(>)\"";
+
+            string templated = Template.Compile(template).Render(data);
+            Assert.AreEqual(expected, templated, "Implicit iterators in triple mustache should interpolate without HTML escaping");
+        }
+
+        [TestMethod]
+        [TestCategory("SpecsSections")]
+        public void ImplicitIteratorAmpersand()
+        {
+            var data = new { list = new List<object> { "&", "\"", "<", ">" } };
+
+            const string template = "\"{{#list}}({{&.}}){{/list}}\"";
+            const string expected = "\"(&)(\")(<)(>)\"";
+
+            string templated = Template.Compile(template).Render(data);
+            Assert.AreEqual(expected, templated, "Implicit iterators in an Ampersand tag should interpolate without HTML escaping");
+        }
+
+        [TestMethod]
+        [TestCategory("SpecsSections")]
+        public void ImplicitIteratorRootLevel()
+        {
+            var data = new List<object> { new { value = "a" }, new { value = "b" } };
+
+            const string template = "\"{{#.}}({{value}}){{/.}}\"";
+            const string expected = "\"(a)(b)\"";
+
+            string templated = Template.Compile(template).Render(data);
+            Assert.AreEqual(expected, templated, "Implicit iterators should work on root-level lists");
+        }
+
+        [TestMethod]
+        [TestCategory("SpecsSections")]
         public void DottedNamesTruthy()
         {
             var data = new { a = new { b = new { c = true } } };

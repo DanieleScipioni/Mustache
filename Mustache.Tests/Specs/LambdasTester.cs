@@ -31,7 +31,7 @@ namespace Mustache.Tests.Specs
     public class LambdasTester
     {
         [TestMethod]
-        [TestCategory("SpecsLamndas")]
+        [TestCategory("SpecsLambdas")]
         public void InterpolationTest()
         {
             dynamic data = new
@@ -45,7 +45,7 @@ namespace Mustache.Tests.Specs
         }
 
         [TestMethod]
-        [TestCategory("SpecsLamndas")]
+        [TestCategory("SpecsLambdas")]
         public void InterpolationExpansionTest()
         {
             dynamic data = new
@@ -61,7 +61,7 @@ namespace Mustache.Tests.Specs
         }
 
         [TestMethod]
-        [TestCategory("SpecsLamndas")]
+        [TestCategory("SpecsLambdas")]
         public void InterpolationAlternateDelimitersTest()
         {
             dynamic data = new
@@ -77,7 +77,7 @@ namespace Mustache.Tests.Specs
         }
 
         [TestMethod]
-        [TestCategory("SpecsLamndas")]
+        [TestCategory("SpecsLambdas")]
         public void InterpolationMultipleCallsTest()
         {
             var calls = 0;
@@ -95,7 +95,7 @@ namespace Mustache.Tests.Specs
         }
 
         [TestMethod]
-        [TestCategory("SpecsLamndas")]
+        [TestCategory("SpecsLambdas")]
         public void EscapingTest()
         {
             dynamic data = new 
@@ -111,7 +111,7 @@ namespace Mustache.Tests.Specs
         }
 
         [TestMethod]
-        [TestCategory("SpecsLamndas")]
+        [TestCategory("SpecsLambdas")]
         public void SectionTest()
         {
             dynamic data = new 
@@ -127,7 +127,7 @@ namespace Mustache.Tests.Specs
         }
 
         [TestMethod]
-        [TestCategory("SpecsLamndas")]
+        [TestCategory("SpecsLambdas")]
         public void SectionExpansionTest()
         {
             dynamic data = new 
@@ -144,7 +144,7 @@ namespace Mustache.Tests.Specs
         }
 
         [TestMethod]
-        [TestCategory("SpecsLamndas")]
+        [TestCategory("SpecsLambdas")]
         public void SectionAlternateDelimitersTest()
         {
             dynamic data = new 
@@ -161,7 +161,7 @@ namespace Mustache.Tests.Specs
         }
 
         [TestMethod]
-        [TestCategory("SpecsLamndas")]
+        [TestCategory("SpecsLambdas")]
         public void SectionMultipleCallsTest()
         {
             dynamic data = new 
@@ -177,7 +177,7 @@ namespace Mustache.Tests.Specs
         }
 
         [TestMethod]
-        [TestCategory("SpecsLamndas")]
+        [TestCategory("SpecsLambdas")]
         public void InvertedSectionTest()
         {
             dynamic data = new 

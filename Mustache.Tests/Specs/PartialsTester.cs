@@ -76,7 +76,7 @@ namespace Mustache.Tests.Specs
         public void Recursion()
         {
             const string template = "{{>node}}";
-            var partials = new Dictionary<string, string> {{"node", "{{content}}<{{#nodes}}{{>node}}{{/nodes}}>"}};
+            var partials = new Dictionary<string, string> { { "node", "{{content}}<{{#nodes}}{{>node}}{{/nodes}}>" } };
             const string expected = "X<Y<>>";
 
             var data = new Dictionary<string, object>
@@ -92,6 +92,24 @@ namespace Mustache.Tests.Specs
 
             string templated = Template.Compile(template).Render(data, partials);
             Assert.AreEqual(expected, templated, "The greater-than operator should properly recurse");
+        }
+
+        [TestMethod]
+        [TestCategory("SpecsPartials")]
+        public void Nested()
+        {
+            const string template = "{{>outer}}";
+            var partials = new Dictionary<string, string> { { "outer", "*{{a}} {{>inner}}*" }, { "inner", "{{b}}!" } };
+            const string expected = "*hello world!*";
+
+            var data = new Dictionary<string, object>
+            {
+                {"a", "hello"},
+                {"b", "world"}
+            };  
+
+            string templated = Template.Compile(template).Render(data, partials);
+            Assert.AreEqual(expected, templated, "The greater-than operator should work from within partials");
         }
 
         [TestMethod]
